@@ -22,8 +22,4 @@ deployment:
     commands:
       - docker login -e "$DOCKER_EMAIL" -u "$DOCKER_USER" -p "$DOCKER_PASS" tutum.co
       - docker push tutum.co/sjmatta/foodwatch
-
-notify:
-  webhooks:
-      - url: "$SLACK_URL"
-      - url: "$DEPLOY_URL"
+      - curl -d "" "$DEPLOY_URL"
