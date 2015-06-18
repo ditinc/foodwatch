@@ -26,3 +26,4 @@ deployment:
 notify:
   webhooks:
       - url: "$SLACK_URL"
+	  - url: "$DEPLOY_URL"
