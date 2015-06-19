@@ -18,7 +18,7 @@ test:
 
 deployment:
   hub:
-    branch: docker-hub-enhancement#19
+    branch: master
     commands:
       - docker login -e "$HUB_EMAIL" -u "$HUB_USER" -p "$HUB_PASS"
       - docker push sjmatta/foodwatch
