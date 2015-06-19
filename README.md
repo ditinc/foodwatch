@@ -4,6 +4,15 @@
 [![Build Status](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch/tree/master.png?style=shield)](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch)
 [![Code Climate](https://codeclimate.com/github/DistributedInformationTechnologies/foodwatch/badges/gpa.svg)](https://codeclimate.com/github/DistributedInformationTechnologies/foodwatch)
 
+For additional details, please see the wiki.
+
+## Development
+1. [Install Meteor](https://www.meteor.com/install)
+2. Clone this project
+3. ```cd``` into the project directory
+4. Run the project: ```meteor```
+5. Go to http://localhost:3000/
+
 ## Continuous Integration
 
 Automated continuous integration and deployment occurs in this order:
