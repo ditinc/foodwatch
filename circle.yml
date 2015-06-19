@@ -22,4 +22,3 @@ deployment:
     commands:
       - docker login -e "$HUB_EMAIL" -u "$HUB_USER" -p "$HUB_PASS"
       - docker push sjmatta/foodwatch
-      - curl -d "" "$DEPLOY_URL" > /dev/null 2>&1
