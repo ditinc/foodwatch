@@ -6,6 +6,7 @@ Meteor.subscribe("LatestFoodRecalls", {
     // TODO: implemnt stopping
   },
   onReady: function onReady() {
-    // NOTE: optionally run when ready
+    Session.set('LatestFoodRecallsIsReady', true);
+    $('select').select2();
   }
 });

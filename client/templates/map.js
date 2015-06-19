@@ -36,15 +36,12 @@ LUtil = {
     );
     
     Tracker.autorun(function() {
+      if (!Session.get('LatestFoodRecallsIsReady')) return;
       var latestFoodRecallsCursor = FoodRecalls.find({});        
       self.latestFoodRecalls = latestFoodRecallsCursor.fetch();
       if (Meteor.settings.debug) console.log('latestFoodRecalls: ', self.latestFoodRecalls);
-      
       // TODO: do something with the data
-      
     });
-    
-    
   },
   // register event handlers
   handleEvent: function(event, callback){
@@ -74,19 +71,26 @@ LUtil = {
       .addTo(this.map);
   }
 };
-Template.map.events({});
+Template.map.events({
+  'change select' : function(event, template){    
+    var val = $(event.currentTarget).val();
+    if (Meteor.settings.debug) console.log('change select val:', val);
+  }
+});
 Template.map.helpers({
-  latestFoodRecalls: FoodRecalls.latest()
+  latestFoodRecalls: function() {    
+    return FoodRecalls.latest();
+  }
 });
 Template.map.created = function(){};
 Template.map.rendered = function(){
   // Initialize the map view
   LUtil.initMap();
   // Add any additional layers 
-  LUtil.addTileLayer('http://a{s}.acetate.geoiq.com/tiles/acetate-labels/{z}/{x}/{y}.png', {
+  /*LUtil.addTileLayer('http://a{s}.acetate.geoiq.com/tiles/acetate-labels/{z}/{x}/{y}.png', {
     attribution: '&copy;2012 Esri & Stamen, Data from OSM and Natural Earth',
     subdomains: '0123',
     minZoom: 2,
     maxZoom: 18
-  });
+  });*/
 };
