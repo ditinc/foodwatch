@@ -75,7 +75,9 @@ LUtil = {
   }
 };
 Template.map.events({});
-Template.map.helpers({});
+Template.map.helpers({
+  latestFoodRecalls: FoodRecalls.latest()
+});
 Template.map.created = function(){};
 Template.map.rendered = function(){
   // Initialize the map view

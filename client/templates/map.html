@@ -1,6 +1,13 @@
 <template name="map">
-    <div id="container">   
-      <h1 class="title">Foodwatch</h1>
-      <div id="map" class="map"></div>
+    <div class="row">
+        <div class="col-xs-12">
+            <label for="latestFoodRecalls">Latest Food Recalls:</label>
+            <select id="latestFoodRecalls" name="latestFoodRecalls">
+            {{#each latestFoodRecalls}}
+                <option value="{{this.recall_number}}">{{this.recalling_firm}}</option>  
+            {{/each}}
+            </select>
+        </div>
     </div>
+    <div id="map" class="map"></div>
 </template>
