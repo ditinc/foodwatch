@@ -5,11 +5,13 @@
 
 ## Continuous Integration
 
-Automated continuous integration and deployment occurs in this order: Github commit &#10140; CircleCI Build/Test &#10140; Docker Container &#10140; Tutum Docker Repository &#10140; Tutum Stack &#10140; DigitalOcean Docker Container
+Automated continuous integration and deployment occurs in this order:
+
+Github commit &#10140; CircleCI Build/Test &#10140; Docker Container &#10140; Docker Hub Repository &#10140; Webhook &#10140; Tutum Stack &#10140; DigitalOcean Docker Container
 
 Deployment only occurs from the Master branch and is halted when the CircleCI Build/Test fails.
 
 Type | URL
 ---- | ---
-Master Branch :rocket: | http://foodwatch-haproxy.sjmatta.svc.tutum.io/
+Master Branch :rocket: | http://foodwatch.sjmatta.svc.tutum.io/
 Release :sunny: | Coming soon!
