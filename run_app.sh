@@ -1,0 +1,2 @@
+export MONGO_URL=mongodb://$MONGO_PORT_27017_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/test
+bash $METEORD_DIR/run_app.sh

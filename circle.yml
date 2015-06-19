@@ -13,7 +13,8 @@ database:
 
 test:
   override:
-    - docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -e "MONGO_URL=mongodb://$MONGO_PORT_27107_TCP_ADDR:$MONGO_PORT_27017_TCP_PORT/test" -p 80:80 sjmatta/foodwatch
+    - docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -p 80:80 sjmatta/foodwatch
+    - sleep 5s
     - curl --retry 10 --retry-delay 5 -v http://localhost
 
 deployment:
