@@ -11,5 +11,5 @@ Deployment only occurs from the Master branch and is halted when the CircleCI Bu
 
 Type | URL
 ---- | ---
-Master Branch :rocket: | http://foodwatch-haproxy.sjmatta.svc.tutum.io/
+Master Branch :rocket: | http://foodwatch.sjmatta.svc.tutum.io/
 Release :sunny: | Coming soon!
