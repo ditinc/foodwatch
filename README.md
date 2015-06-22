@@ -1,8 +1,21 @@
 # foodwatch
 
+Foodwatch is an open web application that consumes data from the FDA Food Enforcements Report API (URL) and allows a visitor to select and display the reported event on a map.  The visitor is then able to highlight states to which that recalled food item was shipped.  The proof of concept below consumes the 10 most recent events.
+
+Type | URL
+---- | ---
+Master Branch :rocket: | http://foodwatch.sjmatta.svc.tutum.io/
+Release :sunny: | Coming soon!
+
 [![Stories in Ready](https://badge.waffle.io/DistributedInformationTechnologies/foodwatch.png?label=ready&title=Ready)](https://waffle.io/DistributedInformationTechnologies/foodwatch)
 [![Build Status](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch/tree/master.png?style=shield)](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch)
 [![Code Climate](https://codeclimate.com/github/DistributedInformationTechnologies/foodwatch/badges/gpa.svg)](https://codeclimate.com/github/DistributedInformationTechnologies/foodwatch)
+
+## Team
+- Dev and Project Lead: sjmatta
+- Leaflet Developer: treyyoder
+- Meteor Developer: dan-nyanko
+- Senior Software Consultant and Scrum Master: etrudeau
 
 For additional details, please see the wiki.
 
@@ -21,7 +34,4 @@ Github commit &#10140; CircleCI Build/Test &#10140; Docker Container &#10140; Do
 
 Deployment only occurs from the Master branch and is halted when the CircleCI Build/Test fails.
 
-Type | URL
----- | ---
-Master Branch :rocket: | http://foodwatch.sjmatta.svc.tutum.io/
-Release :sunny: | Coming soon!
+
