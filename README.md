@@ -11,11 +11,16 @@ Release :sunny: | Coming soon!
 [![Build Status](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch/tree/master.png?style=shield)](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch)
 [![Code Climate](https://codeclimate.com/github/DistributedInformationTechnologies/foodwatch/badges/gpa.svg)](https://codeclimate.com/github/DistributedInformationTechnologies/foodwatch)
 
-## Team
+## Team and Development Process
 - Dev and Project Lead: sjmatta
 - Leaflet Developer: treyyoder
 - Meteor Developer: dan-nyanko
 - Senior Software Consultant and Scrum Master: etrudeau
+
+Our development process requires selection of a dev lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.
+
+## Technology Stack
+Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetView as the mapping layer and map provider.  We leverage CircleCI for continuous integration and Waffle.io for Agile boards.
 
 For additional details, please see the wiki.
 
