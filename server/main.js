@@ -1,7 +1,15 @@
-/**
- *
- */
+/** Builds a string representing the URL to be used as part of a HTTP GET for
+the remote data API */
 var ApiTemplateBuilder = {
+  /**
+   *  The search field is used to search records by report_date AND (optionally)
+   *  status.
+   *  @param options - The object that contains the search parameters.
+   *  @param options.from string - YYMMDD the beginning date
+   *  @param options.to string - YYMMDD the ending date
+   *  @param options.status string - the current status, 'Ongoing', 'Completed',
+   *  'Terminated', and 'Pending'
+   */
   buildSearchTmpl: function(options) {
     // status is optional
     if (_.has(options, 'status')) {
@@ -13,6 +21,14 @@ var ApiTemplateBuilder = {
   buildSearch: function(options) {
     return this.buildSearchTmpl(options)(options);
   },
+    /**
+   *  The endpoint is built from the search template and the limit.  This is
+   *  the actual URL sent to the remote API.
+   *  @param options - The object that contains the url parameters.
+   *  @param options.search string - the search template.
+   *  @param options.limit string - the amount of records that the results will
+   *  be limited.
+   */
   buildEndpointTmpl: function() {
     return _.template('https://' + 'api.' + 'fda.' + 'gov' + '/food' + '/enforcement.json' + '?<%=obj.search%>&limit=<%=obj.limit%>');
   },
@@ -23,7 +39,9 @@ var ApiTemplateBuilder = {
 
 Meteor.methods({
   /**
-   *
+   * During server startup this method is called to check if the mongodb has any
+   * existing records.  If not, call the remote API to fetch the last 100
+   * records, searching by record_date.
    */
   getInitialFoodRecalls: function() {
     if (FoodRecalls.find({}).count() > 0) {
@@ -45,6 +63,9 @@ Meteor.methods({
     if (Meteor.settings.debug) console.log('endpoint:', endpoint);
     return Meteor.call('fetchResponse', endpoint);
   },
+  /**
+   * After the server is running, periodically poll the remote API for new data. 
+   */
   pollFoodRecalls: function() {    
     var dateFormat = 'YYYYMMDD';    
     var daysAgo = moment().subtract(1, 'days');
@@ -62,6 +83,9 @@ Meteor.methods({
     if (Meteor.settings.debug) console.log('endpoint:', endpoint);
     return Meteor.call('fetchResponse', endpoint);
   },
+  /**
+   * Fetch the data asynchronously using HTTP GET.
+   */
   fetchResponse: function(endpoint) {
     this.unblock();
     var response;
@@ -73,6 +97,9 @@ Meteor.methods({
     }
     return Meteor.call('saveResults', response);
   },
+  /**
+   * Upsert the JSON response documents into the mongodb
+   */
   saveResults: function(response) {
     var upserts = []
     if (response.data.results.length > 0) {
@@ -84,6 +111,9 @@ Meteor.methods({
   },
 });
 
+/**
+ * Called upon initial server warm-up
+ */
 Meteor.startup(function(){
   Meteor.call('getInitialFoodRecalls');
   Meteor.setInterval(function() {
