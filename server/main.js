@@ -101,14 +101,14 @@ Meteor.methods({
    * Upsert the JSON response documents into the mongodb
    */
   saveResults: function(response) {
-    var upserts = []
+    var upserts = [];
     if (response.data.results.length > 0) {
       _.each(response.data.results, function(foodRecall) {
         upserts.push(FoodRecalls.upsert({recall_number:foodRecall.recall_number}, foodRecall));
       });
     }
     return upserts;
-  },
+  }
 });
 
 /**
