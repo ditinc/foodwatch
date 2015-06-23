@@ -30,7 +30,8 @@ LUtil = {
       maxZoom: 18,id: 'examples.map-20v6611k'
     });  	
 	
-    this.map = L.map(element, {         
+    this.map = L.map(element, {
+zoomControl:false,		
         layers: [baseLayer]
     })
     .setView(
@@ -218,25 +219,37 @@ LUtil = {
 		};
 	details.addTo(this.map);	
 	
-	var logo = L.control({position: 'bottomleft'});
+	var logo = L.control({position: 'topleft'});
 	logo.onAdd = function (map) {
-		var div = L.DomUtil.create('div', 'info legend');
-		div.innerHTML = '<b>FoodWatch</b>';
+		var div = L.DomUtil.create('div', 'info');
+		div.innerHTML = '<b>FoodWatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>';
 		return div;
 	};
 	logo.addTo(this.map);	
 	
 	var legend = L.control({position: 'bottomleft'});
 	legend.onAdd = function (map) {
-		var div = L.DomUtil.create('div', 'info legend');
+		var div = L.DomUtil.create('div', 'info');
 		div.innerHTML = '<b>Legend</b><br><br><div><span class="legendBlock origin"></span> Origin</div>'
 							+'<br><div><span class="legendBlock destination"></span> Destination</div>'
 							+'<br><div><span class="legendBlock originDestination"></span> Origin & Destination</div>';
 		return div;
 	};
 	legend.addTo(this.map);	
+	
+	var splash = L.control({position: 'topleft'});
+	splash.onAdd = function (map) {
+		var div = L.DomUtil.create('div', 'splash');
+		div.innerHTML = '<b>Welcome to FoodWatch</b> <br><br> Select a recall event in the drop down to see the source '+
+		'state of the food item recall and the states to which the product was shipped.  The top 10 most recent '+
+		'recall items are shown from open.fda.gov'+		
+		'<div id="gotit"><a href="#" >Got it!</a></div>';
+		return div;
+	};
+	splash.addTo(this.map);
   }
 };
+
 Template.map.events({
   'change select' : function(event, template){    
     var val = $(event.currentTarget).val();	
@@ -259,6 +272,12 @@ Template.map.events({
 	}
 	
     if (Meteor.settings.debug) console.log('change select val:', val);
+  },
+  'click #gotit' : function(event, template){   
+	$(".splash").hide();
+  },
+  'click #affordanceOpen': function(event, template){   
+	$(".splash").show();
   }
 });
 
