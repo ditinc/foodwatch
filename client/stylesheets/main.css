@@ -33,6 +33,14 @@ body {
 	border-radius: 5px;
 }
 
+.recall-selector{
+  width:400px;  
+}
+
+.recall-detail {
+	width:400px;	
+}
+
 @media all and (max-width: 480px) {
   /* styles for iPhone/Android landscape (and really narrow browser windows) */
   .notice {
