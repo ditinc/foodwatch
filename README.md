@@ -12,17 +12,33 @@ Release :sunny: | Coming soon!
 [![Code Climate](https://codeclimate.com/github/DistributedInformationTechnologies/foodwatch/badges/gpa.svg)](https://codeclimate.com/github/DistributedInformationTechnologies/foodwatch)
 
 ## Team and Development Process
-- Dev and Project Lead: sjmatta
+- DevOps and Project Lead: sjmatta
 - Leaflet Developer: treyyoder
 - Meteor Developer: dan-nyanko
 - Senior Software Consultant and Scrum Master: etrudeau
 
-Our development process requires selection of a dev lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.
+Our development process requires selection of a project lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.  On most projects, DevOps would be a separate team member, but due to the small size of this project, the lead handled the DevOps setup.
 
 ## Technology Stack
-Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetView as the mapping layer and map provider.  We leverage CircleCI for continuous integration and Waffle.io for Agile boards.
+Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetView as the mapping layer and map provider.  We leverage CircleCI for continuous integration and Waffle.io for Agile boards.  The app is deployed in a Docker container hosted on DigitalOcean.  We leverage Tutum to manage the Docker container on DigitalOcean.
+
+### Continuous Integration
+
+Automated continuous integration and deployment is managed through CircleCI. On commit to the Master branch, the code is automatically deployed to Docker Hub and built by Tutum Stack on a host at DigitalOcean.
 
 For additional details, please see the wiki.
+
+### Configuration Management
+
+Configuration for the app (Meteor) and CircleCI are managed through their respective config files in the repo. 
+
+### Continuous Monitoring
+
+The release container is monitored by New Relic.
+
+### Unit Tests
+
+Unit tests are written using Jasmine.  CircleCI runs the unit tests as part of the build/deploy process.
 
 ## Development
 1. [Install Meteor](https://www.meteor.com/install)
@@ -31,12 +47,6 @@ For additional details, please see the wiki.
 4. Run the project: ```meteor```
 5. Go to http://localhost:3000/
 
-## Continuous Integration
 
-Automated continuous integration and deployment occurs in this order:
-
-Github commit &#10140; CircleCI Build/Test &#10140; Docker Container &#10140; Docker Hub Repository &#10140; Webhook &#10140; Tutum Stack &#10140; DigitalOcean Docker Container
-
-Deployment only occurs from the Master branch and is halted when the CircleCI Build/Test fails.
 
 

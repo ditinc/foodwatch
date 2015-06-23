@@ -2,7 +2,7 @@
 	<div class="row">
         <div style="display:none;" class="col-xs-12">
             <label for="latestFoodRecalls">Latest Food Recalls:</label>
-            <select id="latestFoodRecalls" name="latestFoodRecalls">
+            <select id="latestFoodRecalls" name="latestFoodRecalls" class="recall-selector">
             {{#each latestFoodRecalls}}
                 <option value="{{this.recall_number}}">{{this.recalling_firm}}</option>  
             {{/each}}

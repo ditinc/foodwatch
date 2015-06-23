@@ -30,13 +30,7 @@ LUtil = {
       maxZoom: 18,id: 'examples.map-20v6611k'
     });  	
 	
-    this.map = L.map(element, { 
-        scrollWheelZoom : false,
-        doubleClickZoom : false,
-		dragging		: false,
-        boxZoom         : false,
-        touchZoom       : false,
-		zoomControl		: false,
+    this.map = L.map(element, {         
         layers: [baseLayer]
     })
     .setView(
@@ -80,8 +74,8 @@ LUtil = {
 					opacity: 1,
 					color: 'black',
 					dashArray: '',
-					fillOpacity: 0.2,
-					fillColor: 'red'
+					fillOpacity: 0.3,
+					fillColor: 'blue'
 				});
 				
 			}			
@@ -97,10 +91,8 @@ LUtil = {
 			}			
 	  }
 	  
-	  for(line in LUtil.lines){
-		  
-			  this.map.removeLayer(LUtil.lines[line]);
-		   
+	  for(line in LUtil.lines){		  
+		this.map.removeLayer(LUtil.lines[line]);		   
 	  }
 	  
 	  LUtil.lines = [];
@@ -114,15 +106,17 @@ LUtil = {
 				var props = geojson._layers[key].feature.properties;
 				if(geojson._layers[key].feature.properties.abbreviation==states[st]){					
 					LUtil.currentDestinations.push(geojson._layers[key]);
-					var fillColor = "yellow";
+					var fillColor = "red";
+					var fillOpacity = 0.2;
 					if(LUtil.currentOrigin == geojson._layers[key]){
-						fillColor = "orange";
+						fillColor = "#660066";
+						fillOpacity = 0.4;
 					}
 					geojson._layers[key].setStyle({
 						weight: 2,
 						opacity: 1,
 						color: 'black',						
-						fillOpacity: 0.2,
+						fillOpacity: fillOpacity,
 						fillColor: fillColor
 					});						
 				}			
@@ -136,7 +130,7 @@ LUtil = {
 	for (var key in geojson._layers) {
 	  if (geojson._layers.hasOwnProperty(key)) {
 		var props = geojson._layers[key].feature.properties;
-		if(states.includes(geojson._layers[key].feature.properties.name) || states.includes(geojson._layers[key].feature.properties.abbreviation)){
+		if(states.indexOf(geojson._layers[key].feature.properties.name) >= 0 || states.indexOf(geojson._layers[key].feature.properties.abbreviation) >= 0 ){
 			parsedStates.push(geojson._layers[key].feature.properties.abbreviation);
 		}			
 	  }
@@ -185,38 +179,43 @@ LUtil = {
   addControls: function(){
 	var recallSelector = L.control({position: 'topright'});
 	recallSelector.onAdd = function (map) {
-		var div = L.DomUtil.create('div', 'info legend');
-		div.innerHTML = '<b>Select a Recall:</b> <br> <div id="recallSelector"></div>';
+		var div = L.DomUtil.create('div', 'info');
+		div.innerHTML = '<b>Recall:</b> <div id="recallSelector"></div>';
 		return div;
 	};
 	recallSelector.addTo(this.map);	
 	
 	$("#latestFoodRecalls").appendTo("#recallSelector");
-	$("#latestFoodRecalls").select2();
-	
+		
 	details = L.control({position: 'bottomright'});
 	details.onAdd = function (map) {		
-		this._div = L.DomUtil.create('div', 'info legend col-md-3');		
-		this.update();		
-		return this._div;
+		this._div = L.DomUtil.create('div', 'info recall-detail');		
+		//this.update();		
+		return this._div;		
 	};
-	
-	details.hide = function(){
-		//alert("hidden");
-	}
 	
 	details.update = function (props) {
 			props ? 
 				this._div.innerHTML = (props ?
 					'<div><h3>Recall Details</h3>' +
+					'<div><b>Recall # : </b>' + props.recall_number + '</div>' +
+					'<div><b>Date Reported : </b>' + props.report_date + '</div>' +
+					'<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' +
+					'<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +					
+					'<div><b>Status : </b>' + props.status + '</div>' +
+					'<div><b>Status : </b>' + props.status + '</div>' +
 					'<div><b>Classification : </b>' + props.classification + '</div>' +
 					'<div><b>Code Information : </b>' + props.code_info + '</div>' +
 					'<div><b>State : </b>' + props.state + '</div>' +
+					'<div><b>City : </b>' + props.city + '</div>' +
 					'<div><b>Distribution Pattern : </b>' + props.distribution_pattern + '</div>' +
+					'<div><b>Product Description : </b>' + props.product_description + '</div>' +
 					'<div><b>Product Quantity : </b>' + props.product_quantity + '</div>' +
 					'<div><b>Product Type : </b>' + props.product_type + '</div>' +
 					'<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div></div>'				
 					: 'Select a Recall') : this.hide();
+					
+					$('.recall-detail').show();
 		};
 	details.addTo(this.map);	
 	
@@ -256,7 +255,7 @@ Template.map.events({
 });
 
 Template.map.helpers({
-  latestFoodRecalls: function() {    
+  latestFoodRecalls: function() {
     return FoodRecalls.latest();
   }
 });
@@ -265,5 +264,5 @@ Template.map.created = function(){};
 
 Template.map.rendered = function(){
   // Initialize the map view
-  LUtil.initMap();  
+  LUtil.initMap();
 };

@@ -3,10 +3,14 @@ Meteor.subscribe("LatestFoodRecalls", {
     // TODO: error handling
   },
   onStop: function onStop() {
-    // TODO: implemnt stopping
+    // TODO: implement stopping
   },
   onReady: function onReady() {
     Session.set('LatestFoodRecallsIsReady', true);
-    $('select').select2();
+    $("#latestFoodRecalls").select2({
+		placeholder: 'Select a Recall'
+	});	
+	$("#latestFoodRecalls").select2('val', '');
+	$(".recall-detail").hide();
   }
 });
