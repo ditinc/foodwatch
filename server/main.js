@@ -4,43 +4,39 @@
 (function() {
   "use strict";
   Meteor.methods({
-    /** Builds a string representing the URL to be used as part of a HTTP GET for
-    the remote data API */  
-    ApiTemplateBuilder: {
-      /**
-       *  The search field is used to search records by report_date AND (optionally)
-       *  status.
-       *  @param options - The object that contains the search parameters.
-       *  @param options.from string - YYMMDD the beginning date
-       *  @param options.to string - YYMMDD the ending date
-       *  @param options.status string - the current status, 'Ongoing', 'Completed',
-       *  'Terminated', and 'Pending'
-       */
-      buildSearchTmpl: function(options) {
-        // status is optional
-        if (_.has(options, 'status')) {
-          return _.template('search=report_date:[<%=obj.from%>+TO+<%=obj.to%>]+AND+status:<%=obj.status%>');
-        } else {
-          return _.template('search=report_date:[<%=obj.from%>+TO+<%=obj.to%>]');
-        }
-      },
-      buildSearch: function(options) {
-        return this.buildSearchTmpl(options)(options);
-      },
-        /**
-       *  The endpoint is built from the search template and the limit.  This is
-       *  the actual URL sent to the remote API.
-       *  @param options - The object that contains the url parameters.
-       *  @param options.search string - the search template.
-       *  @param options.limit string - the amount of records that the results will
-       *  be limited.
-       */
-      buildEndpointTmpl: function() {
-        return _.template('https://' + 'api.' + 'fda.' + 'gov' + '/food' + '/enforcement.json' + '?<%=obj.search%>&limit=<%=obj.limit%>');
-      },
-      buildEndpoint: function(options) {
-        return this.buildEndpointTmpl()(options);
+    /**
+     *  The search field is used to search records by report_date AND (optionally)
+     *  status.
+     *  @param options - The object that contains the search parameters.
+     *  @param options.from string - YYMMDD the beginning date
+     *  @param options.to string - YYMMDD the ending date
+     *  @param options.status string - the current status, 'Ongoing', 'Completed',
+     *  'Terminated', and 'Pending'
+     */
+    buildSearchTmpl: function(options) {
+      // status is optional
+      if (_.has(options, 'status')) {
+        return _.template('search=report_date:[<%=obj.from%>+TO+<%=obj.to%>]+AND+status:<%=obj.status%>');
+      } else {
+        return _.template('search=report_date:[<%=obj.from%>+TO+<%=obj.to%>]');
       }
+    },
+    buildSearch: function(options) {
+      return Meteor.call("buildSearchTmpl", options)(options);
+    },
+      /**
+     *  The endpoint is built from the search template and the limit.  This is
+     *  the actual URL sent to the remote API.
+     *  @param options - The object that contains the url parameters.
+     *  @param options.search string - the search template.
+     *  @param options.limit string - the amount of records that the results will
+     *  be limited.
+     */
+    buildEndpointTmpl: function() {
+      return _.template('https://' + 'api.' + 'fda.' + 'gov' + '/food' + '/enforcement.json' + '?<%=obj.search%>&limit=<%=obj.limit%>');
+    },
+    buildEndpoint: function(options) {
+      return Meteor.call("buildEndpointTmpl")(options);
     },
     /**
      * During server startup this method is called to check if the mongodb has any
@@ -58,12 +54,12 @@
           from: daysAgo.format(dateFormat),
           to: today.format(dateFormat)
       };
-      var search = Meteor.methodMap.ApiTemplateBuilder.buildSearch(searchOptions);
+      var search = Meteor.call("buildSearch", searchOptions);
       var endpointOptions = {
         search: search,
         limit: 100
       };
-      var endpoint = Meteor.methodMap.ApiTemplateBuilder.buildEndpoint(endpointOptions);
+      var endpoint = Meteor.call("buildEndpoint", endpointOptions);
       if (Meteor.settings.debug) console.log('endpoint:', endpoint);
       return Meteor.call('fetchResponse', endpoint);
     },
@@ -78,12 +74,12 @@
           from: daysAgo.format(dateFormat),
           to: today.format(dateFormat)
       };
-      var search = Meteor.methodMap.ApiTemplateBuilder.buildSearch(searchOptions);
+      var search = Meteor.call("buildSearch", searchOptions);
       var endpointOptions = {
         search: search,
         limit: 25
       };
-      var endpoint = Meteor.methodMap.ApiTemplateBuilder.buildEndpoint(endpointOptions);
+      var endpoint = Meteor.call("buildEndpoint", endpointOptions);
       if (Meteor.settings.debug) console.log('endpoint:', endpoint);
       return Meteor.call('fetchResponse', endpoint);
     },
