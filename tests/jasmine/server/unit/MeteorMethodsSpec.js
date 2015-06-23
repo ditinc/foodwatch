@@ -1,3 +1,5 @@
+/*globals Meteor, describe, it, spyOn, expect */
+/*globals FoodRecalls */
 (function() {
   "use strict"; 
   describe("Meteor.methods", function() {
@@ -20,7 +22,6 @@
       // NOTE: Meteor.http is being mocked within z-collections-stubs.js
       spyOn(Meteor.http, "get").and.returnValue(fakeHttpResponse);
       
-      var fakeUpserts = [];
       spyOn(FoodRecalls, "upsert").and.callFake(function(search, obj) {      
         return obj;
       });

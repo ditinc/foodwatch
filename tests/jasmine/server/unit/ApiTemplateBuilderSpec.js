@@ -1,3 +1,5 @@
+/*globals describe, it, expect */
+/*globals ApiTemplateBuilder */
 (function() {
   "use strict";
   describe("ApiTemplateBuilder", function() {
