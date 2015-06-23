@@ -74,7 +74,7 @@ LUtil = {
 					opacity: 1,
 					color: 'black',
 					dashArray: '',
-					fillOpacity: 0.3,
+					fillOpacity: 0.6,
 					fillColor: 'blue'
 				});
 				
@@ -109,7 +109,7 @@ LUtil = {
 					var fillColor = "red";
 					var fillOpacity = 0.2;
 					if(LUtil.currentOrigin == geojson._layers[key]){
-						fillColor = "#660066";
+						fillColor = "purple";
 						fillOpacity = 0.4;
 					}
 					geojson._layers[key].setStyle({
@@ -201,8 +201,7 @@ LUtil = {
 					'<div><b>Recall # : </b>' + props.recall_number + '</div>' +
 					'<div><b>Date Reported : </b>' + props.report_date + '</div>' +
 					'<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' +
-					'<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +					
-					'<div><b>Status : </b>' + props.status + '</div>' +
+					'<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +										
 					'<div><b>Status : </b>' + props.status + '</div>' +
 					'<div><b>Classification : </b>' + props.classification + '</div>' +
 					'<div><b>Code Information : </b>' + props.code_info + '</div>' +
@@ -227,6 +226,15 @@ LUtil = {
 	};
 	logo.addTo(this.map);	
 	
+	var legend = L.control({position: 'bottomleft'});
+	legend.onAdd = function (map) {
+		var div = L.DomUtil.create('div', 'info legend');
+		div.innerHTML = '<b>Legend</b><br><br><div><span class="legendBlock origin"></span> Origin</div>'
+							+'<br><div><span class="legendBlock destination"></span> Destination</div>'
+							+'<br><div><span class="legendBlock originDestination"></span> Origin & Destination</div>';
+		return div;
+	};
+	legend.addTo(this.map);	
   }
 };
 Template.map.events({
