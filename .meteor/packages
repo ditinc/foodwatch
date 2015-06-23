@@ -11,3 +11,4 @@ momentjs:moment
 http
 bevanhunt:leaflet
 francocatena:select2
+velocity:html-reporter

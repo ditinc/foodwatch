@@ -45,7 +45,7 @@ Meteor.methods({
    */
   getInitialFoodRecalls: function() {
     if (FoodRecalls.find({}).count() > 0) {
-      return;
+      return [];
     }
     var dateFormat = 'YYYYMMDD';    
     var daysAgo = moment().subtract(Meteor.settings.INITIAL_DAYS_TO_LOAD, 'days');
