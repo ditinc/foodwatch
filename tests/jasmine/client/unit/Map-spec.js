@@ -1,4 +1,4 @@
-/*globals Meteor, describe, it, spyOn, expect, _, window , console, beforeEach, mock */
+/*globals Meteor, describe, it, spyOn, expect, _, window , console, beforeEach, mock, Blaze, document, Template, $*/
 /*globals FoodRecalls, LUtil, L */
 (function() {
   "use strict";
@@ -36,6 +36,11 @@
       test_LUtil.geojson = window.fakeGeojson;
       test_LUtil.highlightDestination(["ABC","123"]);
       expect(test_LUtil.currentDestinations).toEqual([]);
+    });
+    it("should show latestFoodRecalls select", function() {
+      var div = document.createElement("DIV");
+      Blaze.render(Template.map, div); 
+      expect($(div).find("#latestFoodRecalls")[0]).toBeDefined();
     });
     it("should return an array of State abbreviations", function() {
     	window.LUtil.initMap();
