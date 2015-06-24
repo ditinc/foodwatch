@@ -26,3 +26,4 @@ deployment:
       - docker login -e "$HUB_EMAIL" -u "$HUB_USER" -p "$HUB_PASS"
       - docker push sjmatta/foodwatch
       - tutum stack update -f tutum.yml foodwatch-stack
+      - tutum service redeploy foodwatch-app
