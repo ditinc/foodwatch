@@ -201,7 +201,7 @@ LUtil = {
 	details.update = function (props) {
 			props ? 
 				this._div.innerHTML = (props ?
-					'<div><h3>Recall Details</h3>' +
+					'<h3>Recall Details</h3>' +
 					'<div><b>Recall # : </b>' + props.recall_number + '</div>' +
 					'<div><b>Date Reported : </b>' + props.report_date + '</div>' +
 					'<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' +
@@ -215,7 +215,7 @@ LUtil = {
 					'<div><b>Product Description : </b>' + props.product_description + '</div>' +
 					'<div><b>Product Quantity : </b>' + props.product_quantity + '</div>' +
 					'<div><b>Product Type : </b>' + props.product_type + '</div>' +
-					'<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div></div>'				
+					'<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div>'				
 					: 'Select a Recall') : this.hide();
 					
 					$('.recall-detail').show();
