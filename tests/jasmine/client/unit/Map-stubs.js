@@ -8,7 +8,11 @@
       }
     },
     map: function() {
-      return { setView: function(){} };
+      return {
+        setView: function(){
+          return true;
+        }
+      };
     },
     addLayer: function() {},
     tileLayer: function() {},
