@@ -1,4 +1,8 @@
+# warning: some modifications to this file will result in production downtime
+# please see the comments in individual sections for details
+
 foodwatch-proxy:
+# modifying this section will result in a few seconds of downtime for the app
   image: "tutum/haproxy"
   roles:
     - global
@@ -10,12 +14,14 @@ foodwatch-proxy:
     - "443:443"
   expose:
     - "80"
-  environment:
     - "443"
-    SSL_CERT
+  environment:
+    - SSL_CERT
 foodwatch-mongo:
+# modifying this section will result in a few seconds of downtime for the app
   image: "mongo"
 foodwatch-app:
+# modifications can be made to this section without downtime
   image: "sjmatta/foodwatch"
   target_num_containers: 2
   links:
@@ -23,11 +29,13 @@ foodwatch-app:
   environment:
     ROOT_URL: http://localhost
 newrelic:
+# modifications can be made to this section without downtime
+# however APM monitoring will go down for several seconds
   image: "vizzbuzz/newrelic-docker-host:latest"
   cpu_shares: 256
   deployment_strategy: every_node
   environment:
-    NEW_RELIC_LICENSE_KEY
+    - NEW_RELIC_LICENSE_KEY
   mem_limit: 128m
   privileged: true
   restart: always

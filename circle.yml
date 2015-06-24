@@ -4,7 +4,6 @@ machine:
 
 dependencies:
   override:
-    - docker info
     - docker build -t sjmatta/foodwatch .
 
 database:
@@ -20,8 +19,10 @@ test:
     - curl --retry 10 --retry-delay 5 -v http://localhost
 
 deployment:
-  hub:
-    branch: master
+  production:
+    branch: tutum_stack
     commands:
+      - sudo pip install tutum
       - docker login -e "$HUB_EMAIL" -u "$HUB_USER" -p "$HUB_PASS"
       - docker push sjmatta/foodwatch
+      - tutum stack update -f tutum.yml foodwatch-stack
