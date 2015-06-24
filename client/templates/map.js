@@ -158,14 +158,6 @@
       // TODO: validate event and callback
       this.map.on(event, callback);
     },
-    // add marker to specified point (uses default marker image)
-    addMarker: function(latlng){
-      return L.marker(latlng).addTo(this.map);
-    },
-    // remove marker from map
-    removeMarker: function(marker){
-      this.map.removeLayer(marker);
-    },
     // remove layer
     removeLayer: function(layer){
       this.map.removeLayer(layer);
