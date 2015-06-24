@@ -1,3 +1,4 @@
+/*LUtil is inspired by leaflet-demo (https://github.com/MeteorHudsonValley/leaflet-demo) */
 /*globals window, L, $, Tracker, Template, Meteor, console, Session, _*/
 /*globals FoodRecalls, StatesData */
 (function () {
