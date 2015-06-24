@@ -20,7 +20,7 @@ test:
 
 deployment:
   production:
-    branch: master
+    branch: client-tests
     commands:
       - sudo pip install tutum
       - docker login -e "$HUB_EMAIL" -u "$HUB_USER" -p "$HUB_PASS"
