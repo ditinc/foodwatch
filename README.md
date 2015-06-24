@@ -38,15 +38,20 @@ The release container is monitored by New Relic.
 
 ### Unit Tests
 
-Unit tests are written using Jasmine.  CircleCI runs the unit tests as part of the build/deploy process.
+Unit tests are written using Jasmine.  CircleCI runs the unit tests as part of the build/deploy process. See the Development section to run the unit tests.
 
-## Development
+### Development
 1. [Install Meteor](https://www.meteor.com/install)
 2. Clone this project
 3. ```cd``` into the project directory
-4. Run the project: ```meteor```
-5. Go to http://localhost:3000/
+4. Optionally run unit tests: ```meteor --test```
+5. Run the project: ```meteor```
+6. Go to http://localhost:3000/
 
+### Running
+[![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 
-
-
+There are several ways to run the application. You can use the badge above to create the Tutum stack (some environmental variables required), follow the instructions in the Development section, or you can launch the Docker container:
+1. Launch the required Mongo database: ```docker run -d --name mongo mongo```
+2. Launch the foodwatch container: ```docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -p 80:80 sjmatta/foodwatch```
+3. Navigate to http://localhost/
