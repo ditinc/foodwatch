@@ -1,8 +1,7 @@
 LUtil = {  
   // reference to the single 'map' object to control
   map: null,
-  geojson: null,
-  recallData: null,
+  geojson: null,  
   details: null,
   currentOrigin: null,
   lines: [],
@@ -31,7 +30,7 @@ LUtil = {
     });  	
 	
     this.map = L.map(element, {
-zoomControl:false,		
+		zoomControl:false,		
         layers: [baseLayer]
     })
     .setView(
@@ -43,34 +42,33 @@ zoomControl:false,
       var latestFoodRecallsCursor = FoodRecalls.find({});        
       self.latestFoodRecalls = latestFoodRecallsCursor.fetch();
       if (Meteor.settings.debug) {
-		  console.log('latestFoodRecalls: ', self.latestFoodRecalls);
-		  recallData = self.latestFoodRecalls;
+		  console.log('latestFoodRecalls: ', self.latestFoodRecalls);		  
 	  }
       
       // TODO: do something with the data
       
     });
 	
-	geojson = L.geoJson(FoodRecalls.statesData, {
+	self.geojson = L.geoJson(FoodRecalls.statesData, {
 		style:this.styleDefault		
 	}).addTo(this.map);
     
     this.addControls();
-  },
-	
+  },	
   highlightOrigin: function(state){
-	  for (var key in geojson._layers) {
-		  if (geojson._layers.hasOwnProperty(key)) {
-			var props = geojson._layers[key].feature.properties;
-			if(geojson._layers[key].feature.properties.abbreviation==state){
+	  var self = this;
+	  for (var key in self.geojson._layers) {
+		  if (self.geojson._layers.hasOwnProperty(key)) {
+			var props = self.geojson._layers[key].feature.properties;
+			if(self.geojson._layers[key].feature.properties.abbreviation==state){
 				
 				if(LUtil.currentOrigin!=null){
-					geojson.resetStyle(LUtil.currentOrigin);					
+					self.geojson.resetStyle(LUtil.currentOrigin);					
 				}
 				
-				LUtil.currentOrigin = geojson._layers[key]
+				LUtil.currentOrigin = self.geojson._layers[key]
 				
-				geojson._layers[key].setStyle({
+				self.geojson._layers[key].setStyle({
 					weight: 2,
 					opacity: 1,
 					color: 'black',
@@ -84,11 +82,11 @@ zoomControl:false,
 		}
   },
   highlightDestination: function(states){
-	  
+	  var self = this;
 	  if(LUtil.currentDestinations.length!=0){
 		for(state in LUtil.currentDestinations)
 			if(LUtil.currentOrigin != LUtil.currentDestinations[state]){
-				geojson.resetStyle(LUtil.currentDestinations[state]);	
+				self.geojson.resetStyle(LUtil.currentDestinations[state]);	
 			}			
 	  }
 	  
@@ -102,18 +100,18 @@ zoomControl:false,
 		
 	  states = this.parseStates(states);
 	  for(var st = 0; st<states.length; st++){
-		  for (var key in geojson._layers) {
-			  if (geojson._layers.hasOwnProperty(key)) {
-				var props = geojson._layers[key].feature.properties;
-				if(geojson._layers[key].feature.properties.abbreviation==states[st]){					
-					LUtil.currentDestinations.push(geojson._layers[key]);
+		  for (var key in self.geojson._layers) {
+			  if (self.geojson._layers.hasOwnProperty(key)) {
+				var props = self.geojson._layers[key].feature.properties;
+				if(self.geojson._layers[key].feature.properties.abbreviation==states[st]){					
+					LUtil.currentDestinations.push(self.geojson._layers[key]);
 					var fillColor = "red";
 					var fillOpacity = 0.2;
-					if(LUtil.currentOrigin == geojson._layers[key]){
+					if(LUtil.currentOrigin == self.geojson._layers[key]){
 						fillColor = "purple";
 						fillOpacity = 0.4;
 					}
-					geojson._layers[key].setStyle({
+					self.geojson._layers[key].setStyle({
 						weight: 2,
 						opacity: 1,
 						color: 'black',						
@@ -127,12 +125,13 @@ zoomControl:false,
   },
   
   parseStates : function(states){
+	var self = this;
 	var parsedStates = []
-	for (var key in geojson._layers) {
-	  if (geojson._layers.hasOwnProperty(key)) {
-		var props = geojson._layers[key].feature.properties;
-		if(states.indexOf(geojson._layers[key].feature.properties.name) >= 0 || states.indexOf(geojson._layers[key].feature.properties.abbreviation) >= 0 ){
-			parsedStates.push(geojson._layers[key].feature.properties.abbreviation);
+	for (var key in self.geojson._layers) {
+	  if (self.geojson._layers.hasOwnProperty(key)) {
+		var props = self.geojson._layers[key].feature.properties;
+		if(states.indexOf(self.geojson._layers[key].feature.properties.name) >= 0 || states.indexOf(self.geojson._layers[key].feature.properties.abbreviation) >= 0 ){
+			parsedStates.push(self.geojson._layers[key].feature.properties.abbreviation);
 		}			
 	  }
 	} 
@@ -180,10 +179,14 @@ zoomControl:false,
   addControls: function(){
 	var recallSelector = L.control({position: 'topright'});
 	recallSelector.onAdd = function (map) {
-		var div = L.DomUtil.create('div', 'info');
+		var div = L.DomUtil.create('div', 'info recall-selector');
 		div.innerHTML = '<b>Recall:</b> <div id="recallSelector"></div>';
+		L.DomEvent.disableClickPropagation(div);
 		return div;
+		
 	};
+	
+	
 	recallSelector.addTo(this.map);	
 	
 	$("#latestFoodRecalls").appendTo("#recallSelector");
@@ -191,7 +194,7 @@ zoomControl:false,
 	details = L.control({position: 'bottomright'});
 	details.onAdd = function (map) {		
 		this._div = L.DomUtil.create('div', 'info recall-detail');		
-		//this.update();		
+		L.DomEvent.disableClickPropagation(this._div);	
 		return this._div;		
 	};
 	
@@ -221,8 +224,9 @@ zoomControl:false,
 	
 	var logo = L.control({position: 'topleft'});
 	logo.onAdd = function (map) {
-		var div = L.DomUtil.create('div', 'info');
+		var div = L.DomUtil.create('div', 'logo');
 		div.innerHTML = '<b>FoodWatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>';
+		L.DomEvent.disableClickPropagation(div);
 		return div;
 	};
 	logo.addTo(this.map);	
@@ -233,6 +237,7 @@ zoomControl:false,
 		div.innerHTML = '<b>Legend</b><br><br><div><span class="legendBlock origin"></span> Origin</div>'
 							+'<br><div><span class="legendBlock destination"></span> Destination</div>'
 							+'<br><div><span class="legendBlock originDestination"></span> Origin & Destination</div>';
+		L.DomEvent.disableClickPropagation(div);
 		return div;
 	};
 	legend.addTo(this.map);	
@@ -244,6 +249,7 @@ zoomControl:false,
 		'state of the food item recall and the states to which the product was shipped.  The top 10 most recent '+
 		'recall items are shown from open.fda.gov'+		
 		'<div id="gotit"><a href="#" >Got it!</a></div>';
+		L.DomEvent.disableClickPropagation(div);
 		return div;
 	};
 	splash.addTo(this.map);
@@ -291,5 +297,5 @@ Template.map.created = function(){};
 
 Template.map.rendered = function(){
   // Initialize the map view
-  LUtil.initMap();
+  LUtil.initMap();  
 };

@@ -25,13 +25,23 @@ body {
 #gotit{
 	text-align: right;
 }
+
+.logo {
+	padding: 6px 8px;
+	font: 20px/22px Arial, Helvetica, sans-serif;
+	background: white;
+	background: rgba(255,255,255);
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	border-radius: 5px;	
+}
+
 #affordanceOpen{
 	float:right;
 }
 
 .splash{     
-     width:400px;
-     height:150px;
+     width:33%;
+     height:auto;
      z-index:15;
      top:50%;     
      background:white;
@@ -84,12 +94,18 @@ body {
 	border-radius: 5px;
 }
 
+#latestFoodRecalls{
+	
+}
+
 .recall-selector{
-  width:400px;  
+  width:300px;  
 }
 
 .recall-detail {
-	width:400px;	
+	width:25%;	
+	max-height: 50%;
+	overflow: auto;
 }
 
 @media all and (max-width: 480px) {
