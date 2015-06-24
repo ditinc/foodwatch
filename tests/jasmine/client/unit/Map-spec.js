@@ -24,8 +24,18 @@
     });
     it("should not highlight invalid origin", function() {
       test_LUtil.geojson = window.fakeGeojson;
-      test_LUtil.highlightOrigin('OK');
+      test_LUtil.highlightOrigin('123');
       expect(test_LUtil.currentOrigin).toEqual(null);
+    });
+    it("should highlight destinations of valid states", function() {
+      test_LUtil.geojson = window.fakeGeojson;
+      test_LUtil.highlightDestination(["AL","AK"]);
+      expect(test_LUtil.currentDestinations).toEqual([window.fakeGeojson._layers[100], window.fakeGeojson._layers[200]]);
+    });
+    it("should highlight destinations of invalid states", function() {
+      test_LUtil.geojson = window.fakeGeojson;
+      test_LUtil.highlightDestination(["ABC","123"]);
+      expect(test_LUtil.currentDestinations).toEqual([]);
     });
     it("should return an array of State abbreviations", function() {
     	window.LUtil.initMap();
