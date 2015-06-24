@@ -1,0 +1,39 @@
+foodwatch-proxy:
+  image: "tutum/haproxy"
+  roles:
+    - global
+  links:
+    - foodwatch-app
+  ports:
+    - "1936"
+    - "80:80"
+    - "443:443"
+  expose:
+    - "80"
+  environment:
+    - "443"
+    SSL_CERT
+foodwatch-mongo:
+  image: "mongo"
+foodwatch-app:
+  image: "sjmatta/foodwatch"
+  target_num_containers: 2
+  links:
+    - foodwatch-mongo:mongo
+  environment:
+    ROOT_URL: http://localhost
+newrelic:
+  image: "vizzbuzz/newrelic-docker-host:latest"
+  cpu_shares: 256
+  deployment_strategy: every_node
+  environment:
+    NEW_RELIC_LICENSE_KEY
+  mem_limit: 128m
+  privileged: true
+  restart: always
+  roles:
+    - global
+  volumes:
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    - "/dev:/dev"
+    - "/sys:/sys"
