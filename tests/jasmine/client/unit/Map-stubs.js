@@ -26,4 +26,26 @@
       };
     }
   };
+  window.fakeGeojson = {
+    _layers: {
+      100: {
+        feature: {
+          properties: {
+            abbreviation: 'AL',
+            name: 'Alabama'
+          }
+        },
+        setStyle: function() {}
+      },
+      200: {
+        feature: {
+          properties: {
+            abbreviation: 'AK',
+            name: 'Alaska'
+          }
+        },
+        setStyle: function() {}
+      }
+    }
+  };
 })();
