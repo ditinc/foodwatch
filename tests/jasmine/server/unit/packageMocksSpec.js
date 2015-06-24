@@ -7086,7 +7086,7 @@ var packageMetadata = {
                 },
                 "version": {
                   "type": "constant",
-                  "value": "c9385b68f9916ba412bfee440b44653b5ce55749"
+                  "value": "2aee288a0c928c84fd44f78c66aa8f87aa2c3bc1"
                 },
                 "PUBLIC_SETTINGS": {
                   "type": "undefined"
@@ -7210,7 +7210,7 @@ var packageMetadata = {
             },
             "connections": {
               "type": "constant",
-              "value": 2
+              "value": 1
             },
             "timeout": {
               "type": "constant",
@@ -7854,11 +7854,11 @@ var packageMetadata = {
       "members": {
         "autoupdateVersion": {
           "type": "constant",
-          "value": "8be20cdc7ef2f1f83710e0223c5496a7907954a0"
+          "value": "89cc985219805e09bf65a3460440a71f4ffac28e"
         },
         "autoupdateVersionRefreshable": {
           "type": "constant",
-          "value": "df6ddfd376231cc1d3380d86765a1691487cf3a8"
+          "value": "4a7879a2402eec4bf4fb0073695276befe243841"
         },
         "autoupdateVersionCordova": {
           "type": "constant",
@@ -8710,7 +8710,127 @@ var packageMetadata = {
       "type": "object",
       "members": {
         "karmaChilds": {
-          "type": "object"
+          "type": "object",
+          "members": {
+            "jasmine-client-unit": {
+              "type": "object",
+              "members": {
+                "taskName": {
+                  "type": "constant",
+                  "value": "jasmine-client-unit"
+                },
+                "appPath": {
+                  "type": "constant",
+                  "value": "/home/dan/Projects/foodwatch"
+                },
+                "pid": {
+                  "type": "constant",
+                  "value": 1546
+                },
+                "fout": {
+                  "type": "constant",
+                  "value": 29
+                },
+                "child": {
+                  "type": "object",
+                  "members": {
+                    "domain": {
+                      "type": "null",
+                      "value": null
+                    },
+                    "signalCode": {
+                      "type": "null",
+                      "value": null
+                    },
+                    "exitCode": {
+                      "type": "null",
+                      "value": null
+                    },
+                    "pid": {
+                      "type": "constant",
+                      "value": 1546
+                    },
+                    "stdin": {
+                      "type": "null",
+                      "value": null
+                    },
+                    "stdout": {
+                      "type": "null",
+                      "value": null
+                    },
+                    "stderr": {
+                      "type": "null",
+                      "value": null
+                    },
+                    "stdio": {
+                      "type": "array"
+                    },
+                    "spawn": {
+                      "type": "function"
+                    },
+                    "kill": {
+                      "type": "function"
+                    },
+                    "ref": {
+                      "type": "function"
+                    },
+                    "unref": {
+                      "type": "function"
+                    },
+                    "setMaxListeners": {
+                      "type": "function"
+                    },
+                    "emit": {
+                      "type": "function"
+                    },
+                    "addListener": {
+                      "type": "function",
+                      "refID": 17
+                    },
+                    "on": {
+                      "ref": 17
+                    },
+                    "once": {
+                      "type": "function"
+                    },
+                    "removeListener": {
+                      "type": "function"
+                    },
+                    "removeAllListeners": {
+                      "type": "function"
+                    },
+                    "listeners": {
+                      "type": "function"
+                    }
+                  }
+                },
+                "getTaskName": {
+                  "type": "function"
+                },
+                "getChild": {
+                  "type": "function"
+                },
+                "getPid": {
+                  "type": "function"
+                },
+                "isDead": {
+                  "type": "function"
+                },
+                "isRunning": {
+                  "type": "function"
+                },
+                "readPid": {
+                  "type": "function"
+                },
+                "spawn": {
+                  "type": "function"
+                },
+                "kill": {
+                  "type": "function"
+                }
+              }
+            }
+          }
         },
         "getKarmaChild": {
           "type": "function"

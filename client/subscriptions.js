@@ -8,9 +8,9 @@ Meteor.subscribe("LatestFoodRecalls", {
   onReady: function onReady() {
     Session.set('LatestFoodRecallsIsReady', true);
     $("#latestFoodRecalls").select2({
-		placeholder: 'Select a Recall'
-	});	
-	$("#latestFoodRecalls").select2('val', '');
-	$(".recall-detail").hide();
+      placeholder: 'Select a Recall'
+    });	
+    $("#latestFoodRecalls").select2('val', '');
+    $(".recall-detail").hide();
   }
 });

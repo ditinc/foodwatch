@@ -69,7 +69,7 @@
     it("should build endpoint template with valid options", function() {      
       var search = Meteor.call('buildSearch', {from:'20150101',to:'20150613'});
       var endpoint = Meteor.call('buildEndpoint', {search:search, limit:1});
-      expect(endpoint).toEqual('https://api.fda.gov/food/enforcement.json?search=report_date:[20150101+TO+20150613]&limit=1');
+      expect(endpoint).toEqual('https://'+'api.'+'fda.'+'gov'+'/food/enforcement.json?search=report_date:[20150101+TO+20150613]&limit=1');
     });
   });
 })();
