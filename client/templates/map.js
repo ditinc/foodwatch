@@ -128,18 +128,17 @@
     },
     
     parseStates : function(states){
-      var self = this;
-      var parsedStates = [];
-      for (var key in self.geojson._layers) {
-        if (self.geojson._layers.hasOwnProperty(key)) {
-          //var props = self.geojson._layers[key].feature.properties;
-          if(states.indexOf(self.geojson._layers[key].feature.properties.name) >= 0 || states.indexOf(self.geojson._layers[key].feature.properties.abbreviation) >= 0 ){
-            parsedStates.push(self.geojson._layers[key].feature.properties.abbreviation);
-          }			
-        }
-      } 
-      return parsedStates;
-    },
+        var self = this;
+        var parsedStates = [];
+        
+        for(var j = 0; j<StatesData.features.length; j++){
+      	  if(states.indexOf(StatesData.features[j].properties.name) >= 0 || 
+      			  states.indexOf(StatesData.features[j].properties.abbreviation) >= 0 ){
+                parsedStates.push(StatesData.features[j].properties.abbreviation);
+            }	             
+        }     
+        return parsedStates;
+      },
     
     styleDefault: function(feature) {
     return {

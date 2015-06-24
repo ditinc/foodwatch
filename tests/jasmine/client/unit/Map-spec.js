@@ -27,5 +27,11 @@
       test_LUtil.highlightOrigin('OK');
       expect(test_LUtil.currentOrigin).toEqual(null);
     });
+    it("should return an array of State abbreviations", function() {
+    	window.LUtil.initMap();
+      var mockStates = "PANYNJGeorgia";      
+      var parsedStates = window.LUtil.parseStates(mockStates);
+	  expect(parsedStates).toEqual(["GA","NJ","NY","PA"]);
+	});
   });
 })();
