@@ -13,7 +13,7 @@ database:
 test:
   override:
     - curl https://install.meteor.com | sh
-    - meteor --test
+    - JASMINE_BROWSER=PhantomJS JASMINE_CLIENT_UNIT=true JASMINE_CLIENT_INTEGRATION=false JASMIN_SERVER_UNIT=true JASMINE_SERVER_INTEGRATION=false meteor --test
     - docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -p 80:80 sjmatta/foodwatch
     - sleep 5s
     - curl --retry 10 --retry-delay 5 -v http://localhost
