@@ -42,11 +42,21 @@
       Blaze.render(Template.map, div); 
       expect($(div).find("#latestFoodRecalls")[0]).toBeDefined();
     });
-    it("should return an array of State abbreviations", function() {
-    	window.LUtil.initMap();
-      var mockStates = "PANYNJGeorgia";      
-      var parsedStates = window.LUtil.parseStates(mockStates);
-	  expect(parsedStates).toEqual(["GA","NJ","NY","PA"]);
+    it("should return an array of State abbreviations", function() {    	
+      var mockStates = ""
+      var parsedStates = "";
+      
+      mockStates = "PANY NJ Georgia";          
+      parsedStates = window.LUtil.parseStates(mockStates);
+	  expect(parsedStates).toEqual(["GA","NJ"]);
+	  
+	  mockStates = "bad IN PUT";            
+      parsedStates = window.LUtil.parseStates(mockStates);
+	  expect(parsedStates).toEqual(["IN"]);
+	  
+	  mockStates = "nc,sc,NY or Vermont sD Ak SD,MA";            
+      parsedStates = window.LUtil.parseStates(mockStates);
+	  expect(parsedStates).toEqual(["MA","NY","SD","VT"]);
 	});
   });
 })();

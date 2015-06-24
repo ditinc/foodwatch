@@ -128,14 +128,31 @@
     },
     
     parseStates : function(states){
-        var self = this;
         var parsedStates = [];
+        		
+		var acceptedDelimiters = [" ", ",", "", "(", ")","&","."];
+		
+		var nationwide = false;
+			
+		if(states.indexOf("nationwide") >= 0){
+    		nationwide = true;
+    	}
         
         for(var j = 0; j<StatesData.features.length; j++){
-      	  if(states.indexOf(StatesData.features[j].properties.name) >= 0 || 
-      			  states.indexOf(StatesData.features[j].properties.abbreviation) >= 0 ){
-                parsedStates.push(StatesData.features[j].properties.abbreviation);
-            }	             
+        	
+        	if(nationwide || states.indexOf(StatesData.features[j].properties.name) >= 0){
+        		parsedStates.push(StatesData.features[j].properties.abbreviation);
+        		continue;
+        	}
+        	for(var k = 0; k<states.length; k++){
+        		var parsingAbbr = states.substring(k, k+2);
+       	        if (StatesData.features[j].properties.abbreviation == parsingAbbr){
+       	    	   if(acceptedDelimiters.indexOf(states.substring(k-1, k))>=0 
+       	    		 && acceptedDelimiters.indexOf(states.substring(k+2, k+3))>=0){
+       	    		 parsedStates.push(StatesData.features[j].properties.abbreviation);
+       	    	   }
+       	        }
+            }   
         }     
         return parsedStates;
       },
