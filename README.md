@@ -17,28 +17,40 @@ Release :sunny: | Coming soon!
 - Meteor Developer: dan-nyanko
 - Senior Software Consultant and Scrum Master: etrudeau
 
-Our development process requires selection of a project lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.  On most projects, DevOps would be a separate team member, but due to the small size of this project, the lead handled the DevOps setup.
+Our development process requires selection of a project lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.  On most projects, DevOps would be a separate team member, but due to the small size of this project, the lead handled the DevOps setup and tweaks.
 
 ## Technology Stack
-Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetView as the mapping layer and map provider.  We leverage CircleCI for continuous integration and Waffle.io for Agile boards.  The app is deployed in a Docker container hosted on DigitalOcean.  We leverage Tutum to manage the Docker container on DigitalOcean.
+Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetMaps as the mapping layer and map provider.  We leverage CircleCI for continuous integration and Waffle.io for Agile boards.  The app is deployed in a Docker container hosted on DigitalOcean.  We leverage Tutum to manage the Docker container on DigitalOcean.
+
+Most of the technologies in FoodWatch are free and open source.  However, several tools used in the development process are only free to use on open source projects.  These include Tutum, CircleCI, and NewRelic.  The software licensing is as follows:
+
+- Meteor: MIT
+- Jasmine: MIT
+- Leaflet: BSD
+- MongoDB: GNU AGPL v3.0
+- OpenStreetMap: ODbL
+- HAProxy: GPL v2.0
+- Docker: Apache 2.0
+
+Use of FoodWatch is limited by the licensing of its component parts.  The FoodWatch source code is licensed under GPL v3.0.
 
 ### Continuous Integration
 
-Automated continuous integration and deployment is managed through CircleCI. On commit to the Master branch, the code is automatically deployed to Docker Hub and built by Tutum Stack on a host at DigitalOcean.
+Automated continuous integration and deployment is managed through CircleCI (https://circleci.com). On commit to the Master branch, the code is automatically deployed to Docker Hub.  Tutum (https://www.tutum.co/) describes the container configuration, layout, and relationships, and automatically downloads/starts the Docker containers on a node at DigitalOcean.
 
 For additional details, please see the wiki.
 
 ### Configuration Management
 
-Configuration for the app (Meteor) and CircleCI are managed through their respective config files in the repo. 
+Configuration for the app (Meteor in .meteor) and CircleCI (circle.yml) are managed through their respective config files in the repo. Confidential information (passwords, etc.) are stored as environmental variables in CircleCI and aren't available in GitHub.
 
 ### Continuous Monitoring
 
-The release container is monitored by New Relic.
+The release containers are monitored by New Relic. The Tutum stack consists of 1 HAProxy (http://www.haproxy.org/) container doing round robin load balancing to 2 foodwatch containers. The foodwatch containers share a MongoDB container. A New Relic container monitors all of the running containers.  This prevents downtime during automated redeploy.
 
 ### Unit Tests
 
-Unit tests are written using Jasmine.  CircleCI runs the unit tests as part of the build/deploy process. See the Development section to run the unit tests.
+Unit tests are written using Jasmine and run using the Velocity test runner for Meteor.  CircleCI runs the unit tests as part of the build/deploy process. See the Development section to run the unit tests.
 
 ### Development
 1. [Install Meteor](https://www.meteor.com/install)
@@ -51,14 +63,7 @@ Unit tests are written using Jasmine.  CircleCI runs the unit tests as part of t
 ### Running
 [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 
-There are several ways to run the application. You can use the badge above to create the Tutum stack (some environmental variables required), follow the instructions in the Development section.
-
-Or you can launch the Docker container.
-
-1. Set the following environmental variables. (We plan to add additional configuration options in the future, including detecting the lack of these variables and adjusting.)
-  * SSL_CERT: Base64-encoded DER private key and certificate, all on one line, with the text ```\n``` replacing line separators
-  * NEW_RELIC_LICENSE_KEY: The API key provided by New Relic
-
-2. Launch the required Mongo database: ```docker run -d --name mongo mongo```
-3. Launch the foodwatch container: ```docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -p 80:80 sjmatta/foodwatch```
-4. Navigate to http://localhost/
+There are several ways to run the application. You can use the badge above to create the Tutum stack (some environmental variables required), follow the instructions in the Development section, or you can launch the Docker container:
+1. Launch the required Mongo database: ```docker run -d --name mongo mongo```
+2. Launch the foodwatch container: ```docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -p 80:80 sjmatta/foodwatch```
+3. Navigate to http://localhost/
