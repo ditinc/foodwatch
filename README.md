@@ -4,8 +4,8 @@ Foodwatch is an open web application that consumes data from the FDA Food Enforc
 
 Type | URL
 ---- | ---
-Master Branch :rocket: | https://foodwatch.dtec.com/
-Release :sunny: | Coming soon!
+Release :sunny: | https://foodwatch.dtec.com/
+Master Branch :rocket: | http://foodwatch-proxy-snapshot.foodwatch-stack-snapshot.sjmatta.svc.tutum.io/
 
 [![Stories in Ready](https://badge.waffle.io/DistributedInformationTechnologies/foodwatch.png?label=ready&title=Ready)](https://waffle.io/DistributedInformationTechnologies/foodwatch)
 [![Build Status](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch/tree/master.png?style=shield)](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch)
