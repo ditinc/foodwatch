@@ -28,20 +28,3 @@ foodwatch-app-snapshot:
     - foodwatch-mongo-snapshot:mongo
   environment:
     ROOT_URL: http://localhost
-newrelic-snapshot:
-# modifications can be made to this section without downtime
-# however APM monitoring will go down for several seconds
-  image: "vizzbuzz/newrelic-docker-host:latest"
-  cpu_shares: 256
-  deployment_strategy: every_node
-  environment:
-    - NEW_RELIC_LICENSE_KEY
-  mem_limit: 128m
-  privileged: true
-  restart: always
-  roles:
-    - global
-  volumes:
-    - "/var/run/docker.sock:/var/run/docker.sock"
-    - "/dev:/dev"
-    - "/sys:/sys"
