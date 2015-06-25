@@ -1,6 +1,6 @@
 # Foodwatch
 
-Foodwatch is an open web application that consumes data from the FDA Food Enforcements Report API (URL) and allows a visitor to select and display the reported event on a map.  The visitor is then able to highlight states to which that recalled food item was shipped.  The proof of concept below consumes the 10 most recent events.
+Foodwatch is an open web application that consumes data from the FDA Food Enforcements Report API (URL) and allows a visitor to select and display the reported event on a map.  The visitor is then able to highlight states to which that recalled food item was shipped.  This proof of concept consumes the 10 most recent events.
 
 Type | URL
 ---- | ---
@@ -17,7 +17,7 @@ Master Branch :rocket: | http://foodwatch-proxy-snapshot.foodwatch-stack-snapsho
 - Meteor Developer: dan-nyanko
 - Senior Software Consultant and Scrum Master: etrudeau
 
-Our development process requires selection of a project lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.  On most projects, DevOps would be a separate team member, but due to the small size of this project, the lead handled the DevOps setup and tweaks.  We conduct code review directly in GitHub through comments and issues.  Issues are automatically synced with Waffle.io Agile boards.
+Our development process requires selection of a project lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.  On most projects, DevOps would be a separate team member, but due to the small size of this project, the lead handled the DevOps setup and tweaks.  We conduct code review directly in GitHub through comments and issues and in our Slack (http://slack.com) collaboration environment.  Issues are automatically synced with Waffle.io Agile boards.
 
 ## Technology Stack
 Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetMaps as the mapping layer and map provider.  We leverage CircleCI for continuous integration.  The app is deployed in a Docker container hosted on DigitalOcean.  We leverage Tutum to manage the Docker container on DigitalOcean.
@@ -42,11 +42,11 @@ For additional details, please see the wiki.
 
 ### Configuration Management
 
-Configuration for the app (Meteor in .meteor) and CircleCI (circle.yml) are managed through their respective config files in the repo. Confidential information (passwords, etc.) are stored as environmental variables in CircleCI and aren't available in GitHub.
+Configuration for the app (Meteor in .meteor), CircleCI (circle.yml), and Tutum (tutum.yml) are managed through their respective config files in the repo. Confidential information (passwords, etc.) are stored as environmental variables in CircleCI and aren't available in GitHub.
 
 ### Continuous Monitoring
 
-The release containers are monitored by New Relic. The Tutum stack consists of 1 HAProxy (http://www.haproxy.org/) container doing round robin load balancing to 2 Foodwatch containers. The Foodwatch containers share a MongoDB container. A New Relic container monitors all of the running containers.  This prevents downtime during automated redeploy.
+The release containers are monitored by New Relic. The Tutum stack consists of 2 HAProxy (http://www.haproxy.org/) containers -- one for production/release, and one for the master branch, doing round robin load balancing to 4 Foodwatch containers. Each set of 2 Foodwatch containers share a MongoDB container. Two New Relic container monitor half of the running containers each.
 
 ### Unit Tests
 
