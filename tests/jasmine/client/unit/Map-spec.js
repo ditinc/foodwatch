@@ -36,7 +36,12 @@
       test_LUtil.highlightDestination("ABC,123");
       expect(test_LUtil.currentDestinations).toEqual([]);
     });
-    it("should show latestFoodRecalls select", function() {
+    it("template should show latestFoodRecalls select", function() {
+      var div = document.createElement("DIV");
+      Blaze.render(Template.map, div); 
+      expect($(div).find("#map")[0]).toBeDefined();
+    });
+    it("template should show map", function() {
       var div = document.createElement("DIV");
       Blaze.render(Template.map, div); 
       expect($(div).find("#latestFoodRecalls")[0]).toBeDefined();

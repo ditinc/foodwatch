@@ -1,4 +1,6 @@
 /*globals window */
+(function() {
+  "use strict";
   window.L = {
     Icon: {
       Default: {
@@ -49,3 +51,4 @@
       }
     }
   };
+})();
