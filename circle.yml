@@ -27,3 +27,11 @@ deployment:
       - sudo pip install tutum
       - tutum stack update -f tutum.yml foodwatch-stack
       - tutum service redeploy foodwatch-app
+  master:
+    branch: master_deploy
+    commands:
+      - docker tag sjmatta/foodwatch sjmatta/foodwatch:SNAPSHOT
+      - sudo pip install tutum
+      - tutum push sjmatta/foodwatch:SNAPSHOT
+      - tutum stack update -f tutum.yml foodwatch-stack-snapshot
+      - tutum service redeploy foodwatch-app-snapshot

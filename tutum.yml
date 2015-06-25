@@ -1,13 +1,13 @@
 # warning: some modifications to this file will result in production downtime
 # please see the comments in individual sections for details
 
-foodwatch-proxy:
+foodwatch-proxy-snapshot:
 # modifying this section will result in a few seconds of downtime for the app
   image: "tutum/haproxy"
   roles:
     - global
   links:
-    - foodwatch-app
+    - foodwatch-app-snapshot
   ports:
     - "1936"
     - "80:80"
@@ -17,18 +17,18 @@ foodwatch-proxy:
     - "443"
   environment:
     - SSL_CERT
-foodwatch-mongo:
+foodwatch-mongo-snapshot:
 # modifying this section will result in a few seconds of downtime for the app
   image: "mongo"
-foodwatch-app:
+foodwatch-app-snapshot:
 # modifications can be made to this section without downtime
-  image: "sjmatta/foodwatch"
+  image: "sjmatta/foodwatch:SNAPSHOT"
   target_num_containers: 2
   links:
-    - foodwatch-mongo:mongo
+    - foodwatch-mongo-snapshot:mongo
   environment:
     ROOT_URL: http://localhost
-newrelic:
+newrelic-snapshot:
 # modifications can be made to this section without downtime
 # however APM monitoring will go down for several seconds
   image: "vizzbuzz/newrelic-docker-host:latest"
