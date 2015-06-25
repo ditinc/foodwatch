@@ -1,3 +1,4 @@
+/*globals Meteor, Session */
 Meteor.subscribe("LatestFoodRecalls", {
   onError: function onError() {
     // TODO: error handling

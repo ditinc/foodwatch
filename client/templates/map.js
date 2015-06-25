@@ -154,7 +154,7 @@
       }     
       return parsedStates;
     },
-    styleDefault: function(feature) {
+    styleDefault: function() {
       return {
         weight: 2,
         opacity: 5,
