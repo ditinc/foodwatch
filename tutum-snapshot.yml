@@ -22,7 +22,7 @@ foodwatch-mongo-snapshot:
   image: "mongo"
 foodwatch-app-snapshot:
 # modifications can be made to this section without downtime
-  image: "sjmatta/foodwatch:SNAPSHOT"
+  image: "tutum.co/sjmatta/foodwatch:SNAPSHOT"
   target_num_containers: 2
   links:
     - foodwatch-mongo-snapshot:mongo
