@@ -1,11 +1,11 @@
-# foodwatch
+# Foodwatch
 
 Foodwatch is an open web application that consumes data from the FDA Food Enforcements Report API (URL) and allows a visitor to select and display the reported event on a map.  The visitor is then able to highlight states to which that recalled food item was shipped.  The proof of concept below consumes the 10 most recent events.
 
 Type | URL
 ---- | ---
-Master Branch :rocket: | https://foodwatch.dtec.com/
-Release :sunny: | Coming soon!
+Release :sunny: | https://foodwatch.dtec.com/
+Master Branch :rocket: | http://foodwatch-proxy-snapshot.foodwatch-stack-snapshot.sjmatta.svc.tutum.io/
 
 [![Stories in Ready](https://badge.waffle.io/DistributedInformationTechnologies/foodwatch.png?label=ready&title=Ready)](https://waffle.io/DistributedInformationTechnologies/foodwatch)
 [![Build Status](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch/tree/master.png?style=shield)](https://circleci.com/gh/DistributedInformationTechnologies/foodwatch)
@@ -46,7 +46,7 @@ Configuration for the app (Meteor in .meteor) and CircleCI (circle.yml) are mana
 
 ### Continuous Monitoring
 
-The release containers are monitored by New Relic. The Tutum stack consists of 1 HAProxy (http://www.haproxy.org/) container doing round robin load balancing to 2 foodwatch containers. The foodwatch containers share a MongoDB container. A New Relic container monitors all of the running containers.  This prevents downtime during automated redeploy.
+The release containers are monitored by New Relic. The Tutum stack consists of 1 HAProxy (http://www.haproxy.org/) container doing round robin load balancing to 2 Foodwatch containers. The Foodwatch containers share a MongoDB container. A New Relic container monitors all of the running containers.  This prevents downtime during automated redeploy.
 
 ### Unit Tests
 
@@ -71,5 +71,5 @@ Or you can launch the Docker container.
   * SSL_CERT: Base64-encoded DER private key and certificate, all on one line, with the text ```\n``` replacing line separators
   * NEW_RELIC_LICENSE_KEY: The API key provided by New Relic
 2. Launch the required Mongo database: ```docker run -d --name mongo mongo```
-3. Launch the foodwatch container: ```docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -p 80:80 sjmatta/foodwatch```
+3. Launch the Foodwatch container: ```docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -p 80:80 sjmatta/foodwatch```
 4. Navigate to http://localhost/

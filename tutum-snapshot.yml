@@ -1,0 +1,25 @@
+# warning: some modifications to this file will result in downtime
+# please see the comments in individual sections for details
+
+foodwatch-proxy-snapshot:
+# modifying this section will result in a few seconds of downtime for the app
+  image: "tutum/haproxy"
+  roles:
+    - global
+  links:
+    - foodwatch-app-snapshot
+  ports:
+    - "80:80"
+  expose:
+    - "80"
+foodwatch-mongo-snapshot:
+# modifying this section will result in a few seconds of downtime for the app
+  image: "mongo"
+foodwatch-app-snapshot:
+# modifications can be made to this section without downtime
+  image: "tutum.co/sjmatta/foodwatch:SNAPSHOT"
+  target_num_containers: 2
+  links:
+    - foodwatch-mongo-snapshot:mongo
+  environment:
+    ROOT_URL: http://foodwatch-proxy-snapshot.foodwatch-stack-snapshot.sjmatta.svc.tutum.io
