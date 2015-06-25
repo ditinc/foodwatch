@@ -1,4 +1,4 @@
-/*globals window, L */
+/*globals window */
 (function() {
   "use strict";
   window.L = {

@@ -1,4 +1,4 @@
-/*globals _, moment, Meteor, console, require */
+/*globals _, moment, Meteor, console */
 /*globals FoodRecalls */
 /*jshint curly:false */
 (function() {

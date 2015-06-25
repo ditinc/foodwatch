@@ -1,5 +1,4 @@
-/*globals Meteor, describe, it, spyOn, expect, _, window , console, beforeEach, mock, Blaze, document, Template, $*/
-/*globals FoodRecalls, LUtil, L */
+/*globals describe, it, expect, _, window , beforeEach, Blaze, document, Template, $*/
 (function() {
   "use strict";
   var test_LUtil;
@@ -42,21 +41,21 @@
       Blaze.render(Template.map, div); 
       expect($(div).find("#latestFoodRecalls")[0]).toBeDefined();
     });
-    it("should return an array of State abbreviations", function() {    	
-      var mockStates = ""
+    it("should return an array of State abbreviations", function() {
+      var mockStates = "";
       var parsedStates = "";
       
       mockStates = "PANY NJ Georgia";          
       parsedStates = window.LUtil.parseStates(mockStates);
-	  expect(parsedStates).toEqual(["GA","NJ"]);
-	  
-	  mockStates = "bad IN PUT";            
+      expect(parsedStates).toEqual(["GA","NJ"]);
+      
+      mockStates = "bad IN PUT";            
       parsedStates = window.LUtil.parseStates(mockStates);
-	  expect(parsedStates).toEqual(["IN"]);
-	  
-	  mockStates = "nc,sc,NY or Vermont sD Ak SD,MA";            
+      expect(parsedStates).toEqual(["IN"]);
+      
+      mockStates = "nc,sc,NY or Vermont sD Ak SD,MA";            
       parsedStates = window.LUtil.parseStates(mockStates);
-	  expect(parsedStates).toEqual(["MA","NY","SD","VT"]);
-	});
+      expect(parsedStates).toEqual(["MA","NY","SD","VT"]);
+    });
   });
 })();
