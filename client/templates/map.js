@@ -48,7 +48,7 @@
           // The data from the server is ready.
           var latestFoodRecallsCursor = FoodRecalls.find({});        
           self.latestFoodRecalls = latestFoodRecallsCursor.fetch();        
-          if (Meteor.settings.debug) console.log("latestFoodRecalls data is ready: ", self.latestFoodRecalls);
+          if (Meteor.settings.debug) { console.log("latestFoodRecalls data is ready: ", self.latestFoodRecalls); }
         }
       });
     
@@ -63,9 +63,9 @@
       for (var key in self.geojson._layers) {
         if (self.geojson._layers.hasOwnProperty(key)) {
           //var props = self.geojson._layers[key].feature.properties;
-          if(self.geojson._layers[key].feature.properties.abbreviation==state){
+          if(self.geojson._layers[key].feature.properties.abbreviation === state) {
             
-            if(self.currentOrigin!==null){
+            if(self.currentOrigin !== null){
               self.geojson.resetStyle(self.currentOrigin);					
             }
             
@@ -87,11 +87,11 @@
     highlightDestination: function(states){
       var self = this;
       if(self.currentDestinations.length!==0){
-	    for(var state in self.currentDestinations){
-	      if(self.currentOrigin != self.currentDestinations[state]){
-	        self.geojson.resetStyle(self.currentDestinations[state]);	
-	      }  
-	    }        			
+        for(var state in self.currentDestinations){
+          if(self.currentOrigin !== self.currentDestinations[state]){
+            self.geojson.resetStyle(self.currentDestinations[state]);	
+          }
+        }
       }
       
       _.each(self.lines, function(line) {
@@ -107,11 +107,11 @@
         for (var key in self.geojson._layers) {
           if (self.geojson._layers.hasOwnProperty(key)) {
           //var props = self.geojson._layers[key].feature.properties;
-          if(self.geojson._layers[key].feature.properties.abbreviation==states[st]){					
+          if(self.geojson._layers[key].feature.properties.abbreviation === states[st]) {
             self.currentDestinations.push(self.geojson._layers[key]);
             var fillColor = "red";
             var fillOpacity = 0.2;
-            if(self.currentOrigin == self.geojson._layers[key]){
+            if(self.currentOrigin === self.geojson._layers[key]){
               fillColor = "purple";
               fillOpacity = 0.4;
             }
@@ -129,51 +129,46 @@
     },
     
     parseStates : function(states){
+      var parsedStates = [];
+      var acceptedDelimiters = [" ", ",", "", "(", ")","&","."];
+      var nationwide = false;
       
-        var parsedStates = [];
-        		
-		var acceptedDelimiters = [" ", ",", "", "(", ")","&","."];
-		
-		var nationwide = false;
-			
-		if(states.indexOf("nationwide") >= 0){
-    		nationwide = true;
-    	}
-        
-        for(var j = 0; j<StatesData.features.length; j++){
-        	
-        	if(nationwide || states.indexOf(StatesData.features[j].properties.name) >= 0){
-        		parsedStates.push(StatesData.features[j].properties.abbreviation);
-        		continue;
-        	}
-        	for(var k = 0; k<states.length; k++){
-        		var parsingAbbr = states.substring(k, k+2);
-       	        if (StatesData.features[j].properties.abbreviation == parsingAbbr){
-       	    	   if(acceptedDelimiters.indexOf(states.substring(k-1, k))>=0 
-       	    		 && acceptedDelimiters.indexOf(states.substring(k+2, k+3))>=0){
-       	    		 parsedStates.push(StatesData.features[j].properties.abbreviation);
-       	    	   }
-       	        }
-            }   
-        }     
-        return parsedStates;
-      },
-    
-    styleDefault: function(feature) {
-    return {
-      weight: 2,
-      opacity: 5,
-      color: 'black',
-      dashArray: '',
-      fillOpacity: 0.1,
-      fillColor: 'white'
-    };
+      if(states.indexOf("nationwide") >= 0){
+        nationwide = true;
+      }
+      
+      for(var j = 0; j<StatesData.features.length; j++){
+        if(nationwide || states.indexOf(StatesData.features[j].properties.name) >= 0) {
+          parsedStates.push(StatesData.features[j].properties.abbreviation);
+          continue;
+        }
+        for(var k = 0; k<states.length; k++){
+          var parsingAbbr = states.substring(k, k+2);
+          if (StatesData.features[j].properties.abbreviation === parsingAbbr) {
+            if (acceptedDelimiters.indexOf(states.substring(k-1, k))>=0 &&
+                acceptedDelimiters.indexOf(states.substring(k+2, k+3))>=0){
+              parsedStates.push(StatesData.features[j].properties.abbreviation);
+            }
+          }
+        }   
+      }     
+      return parsedStates;
     },
-    
+    styleDefault: function(feature) {
+      return {
+        weight: 2,
+        opacity: 5,
+        color: 'black',
+        dashArray: '',
+        fillOpacity: 0.1,
+        fillColor: 'white'
+      };
+    },
     // register event handlers
     handleEvent: function(event, callback){
-      if (!event || !callback) 
+      if (!event || !callback) {
         return;
+      }
       // TODO: validate event and callback
       this.map.on(event, callback);
     },
@@ -184,29 +179,28 @@
     addLayer: function(layer) {
       this.map.addLayer(layer);
     },
-    addTileLayer: function(_layer, _obj){
+    addTileLayer: function(_layer, _obj) {
       _obj = _obj || "";
       L.tileLayer( _layer, _obj)
         .addTo(this.map);
     },
-    addControls: function(){
+    
+    addControls: function() {
       var self = this;
       var recallSelector = L.control({position: 'topright'});
-      recallSelector.onAdd = function (map) {
+      recallSelector.onAdd = function () {
         var div = L.DomUtil.create('div', 'info recall-selector');
         div.innerHTML = '<b>Recall:</b> <div id="recallSelector"></div>';
         L.DomEvent.disableClickPropagation(div);
         return div;
-        
       };
-      
       
       recallSelector.addTo(this.map);	
       
       $("#latestFoodRecalls").appendTo("#recallSelector");
         
       self.details = L.control({position: 'bottomright'});
-      self.details.onAdd = function (map) {		
+      self.details.onAdd = function () {		
         this._div = L.DomUtil.create('div', 'info recall-detail');		
         L.DomEvent.disableClickPropagation(this._div);	
         return this._div;		
@@ -236,7 +230,7 @@
       self.details.addTo(self.map);	
       
       var logo = L.control({position: 'topleft'});
-      logo.onAdd = function (map) {
+      logo.onAdd = function () {
         var div = L.DomUtil.create('div', 'logo');
         div.innerHTML = '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>';
         L.DomEvent.disableClickPropagation(div);
@@ -245,7 +239,7 @@
       logo.addTo(self.map);	
       
       var legend = L.control({position: 'bottomleft'});
-      legend.onAdd = function (map) {
+      legend.onAdd = function () {
         var div = L.DomUtil.create('div', 'info');
         div.innerHTML = '<b>Legend</b><br><br><div><span class="legendBlock origin"></span> Origin</div>'+
                   '<br><div><span class="legendBlock destination"></span> Destination</div>'+
@@ -256,7 +250,7 @@
       legend.addTo(self.map);	
       
       var splash = L.control({position: 'topleft'});
-      splash.onAdd = function (map) {
+      splash.onAdd = function () {
         var div = L.DomUtil.create('div', 'splash');
         div.innerHTML = '<b>Welcome to Foodwatch!</b> <br><br> Select a recall event in the drop down to see the source '+
         'state of the food item recall and the states to which the product was shipped.  The top 10 most recent '+
@@ -269,38 +263,39 @@
     }
   };
   
-  Template.map.events({'change select' : function(event, template){    
-    var val = $(event.currentTarget).val();    
-    if (val === '') {
-      return;
-    }
-    
-    var fr = FoodRecalls.find({}).fetch();
-    var originState = null;
-    var destinationStates = null;
-    
-    for(var i = 0; i<fr.length; i++){
-      if(fr[i].recall_number==val){			
-        window.LUtil.details.update(fr[i]);	
-        originState = fr[i].state;
-        destinationStates = fr[i].distribution_pattern;
+  Template.map.events(
+    {'change select' : function(event){    
+      var val = $(event.currentTarget).val();    
+      if (val === '') {
+        return;
       }
-    }
-    
-    for(var j = 0; j<StatesData.features.length; j++){
-      if(StatesData.features[j].properties.abbreviation==originState){				
-          window.LUtil.highlightOrigin(originState);
-          window.LUtil.highlightDestination(destinationStates);
-      }     
-    }
-    
-      if (Meteor.settings.debug) console.log('change select val:', val);
-    },
-    'click #gotit' : function(event, template){   
-    $(".splash").hide();
-    },
-    'click #affordanceOpen': function(event, template){   
-    $(".splash").show();
+      
+      var fr = FoodRecalls.find({}).fetch();
+      var originState = null;
+      var destinationStates = null;
+      
+      for(var i = 0; i<fr.length; i++){
+        if(fr[i].recall_number === val){			
+          window.LUtil.details.update(fr[i]);	
+          originState = fr[i].state;
+          destinationStates = fr[i].distribution_pattern;
+        }
+      }
+      
+      for(var j = 0; j<StatesData.features.length; j++){
+        if(StatesData.features[j].properties.abbreviation === originState){				
+            window.LUtil.highlightOrigin(originState);
+            window.LUtil.highlightDestination(destinationStates);
+        }     
+      }
+      
+      if (Meteor.settings.debug) {
+        console.log('change select val:', val);
+      }
+    }, 'click #gotit' : function(){   
+      $(".splash").hide();
+    }, 'click #affordanceOpen': function(){   
+      $(".splash").show();
     }
   });
   
