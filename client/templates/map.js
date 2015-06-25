@@ -128,6 +128,7 @@
     },
     
     parseStates : function(states){
+      console.log('states:', states);
         var parsedStates = [];
         		
 		var acceptedDelimiters = [" ", ",", "", "(", ")","&","."];

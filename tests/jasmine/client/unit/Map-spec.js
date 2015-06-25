@@ -29,12 +29,12 @@
     });
     it("should highlight destinations of valid states", function() {
       test_LUtil.geojson = window.fakeGeojson;
-      test_LUtil.highlightDestination(["AL","AK"]);
+      test_LUtil.highlightDestination("AL,AK");
       expect(test_LUtil.currentDestinations).toEqual([window.fakeGeojson._layers[100], window.fakeGeojson._layers[200]]);
     });
     it("should highlight destinations of invalid states", function() {
       test_LUtil.geojson = window.fakeGeojson;
-      test_LUtil.highlightDestination(["ABC","123"]);
+      test_LUtil.highlightDestination("ABC,123");
       expect(test_LUtil.currentDestinations).toEqual([]);
     });
     it("should show latestFoodRecalls select", function() {
