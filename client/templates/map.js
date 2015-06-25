@@ -87,10 +87,11 @@
     highlightDestination: function(states){
       var self = this;
       if(self.currentDestinations.length!==0){
-      for(var state in self.currentDestinations)
-        if(self.currentOrigin != self.currentDestinations[state]){
-          self.geojson.resetStyle(self.currentDestinations[state]);	
-        }			
+	    for(var state in self.currentDestinations){
+	      if(self.currentOrigin != self.currentDestinations[state]){
+	        self.geojson.resetStyle(self.currentDestinations[state]);	
+	      }  
+	    }        			
       }
       
       _.each(self.lines, function(line) {
@@ -237,7 +238,7 @@
       var logo = L.control({position: 'topleft'});
       logo.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'logo');
-        div.innerHTML = '<b>FoodWatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>';
+        div.innerHTML = '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>';
         L.DomEvent.disableClickPropagation(div);
         return div;
       };
@@ -257,7 +258,7 @@
       var splash = L.control({position: 'topleft'});
       splash.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'splash');
-        div.innerHTML = '<b>Welcome to FoodWatch</b> <br><br> Select a recall event in the drop down to see the source '+
+        div.innerHTML = '<b>Welcome to Foodwatch!</b> <br><br> Select a recall event in the drop down to see the source '+
         'state of the food item recall and the states to which the product was shipped.  The top 10 most recent '+
         'recall items are shown from open.fda.gov'+		
         '<div id="gotit"><a href="#" >Got it!</a></div>';

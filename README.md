@@ -22,7 +22,7 @@ Our development process requires selection of a project lead to run the project.
 ## Technology Stack
 Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetMaps as the mapping layer and map provider.  We leverage CircleCI for continuous integration.  The app is deployed in a Docker container hosted on DigitalOcean.  We leverage Tutum to manage the Docker container on DigitalOcean.
 
-Most of the technologies in FoodWatch are free and open source.  However, several tools used in the development process are only free to use on open source projects.  These include Tutum, CircleCI, and NewRelic.  The software licensing is as follows:
+Most of the technologies in Foodwatch are free and open source.  However, several tools used in the development process are only free to use on open source projects.  These include Tutum, CircleCI, and NewRelic.  The software licensing is as follows:
 
 - Meteor: MIT
 - Jasmine: MIT
@@ -32,7 +32,7 @@ Most of the technologies in FoodWatch are free and open source.  However, severa
 - HAProxy: GPL v2.0
 - Docker: Apache 2.0
 
-Use of FoodWatch is limited by the licensing of its component parts.  The FoodWatch source code is licensed under GPL v3.0.
+Use of Foodwatch is limited by the licensing of its component parts.  The Foodwatch source code is licensed under GPL v3.0.
 
 ### Continuous Integration
 
