@@ -1,4 +1,4 @@
-# warning: some modifications to this file will result in production downtime
+# warning: some modifications to this file will result in downtime
 # please see the comments in individual sections for details
 
 foodwatch-proxy-snapshot:
@@ -9,14 +9,9 @@ foodwatch-proxy-snapshot:
   links:
     - foodwatch-app-snapshot
   ports:
-    - "1936"
     - "80:80"
-    - "443:443"
   expose:
     - "80"
-    - "443"
-  environment:
-    - SSL_CERT
 foodwatch-mongo-snapshot:
 # modifying this section will result in a few seconds of downtime for the app
   image: "mongo"
@@ -27,4 +22,4 @@ foodwatch-app-snapshot:
   links:
     - foodwatch-mongo-snapshot:mongo
   environment:
-    ROOT_URL: http://localhost
+    ROOT_URL: http://foodwatch-proxy-snapshot.foodwatch-stack-snapshot.sjmatta.svc.tutum.io
