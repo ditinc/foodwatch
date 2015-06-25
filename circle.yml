@@ -20,10 +20,10 @@ test:
 
 deployment:
   production:
-    branch: master
+    branch: release
     commands:
-      - sudo pip install tutum
       - docker login -e "$HUB_EMAIL" -u "$HUB_USER" -p "$HUB_PASS"
       - docker push sjmatta/foodwatch
+      - sudo pip install tutum
       - tutum stack update -f tutum.yml foodwatch-stack
       - tutum service redeploy foodwatch-app
