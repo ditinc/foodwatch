@@ -1,6 +1,4 @@
 /*globals window */
-(function() {
-  "use strict";
   window.L = {
     Icon: {
       Default: {
@@ -24,6 +22,9 @@
         addTo: function() {},
         onAdd: function() {}
       };
+    },
+    DomUtil: {
+      create: function() {}
     }
   };
   window.fakeGeojson = {
@@ -48,4 +49,3 @@
       }
     }
   };
-})();
