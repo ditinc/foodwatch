@@ -179,29 +179,29 @@
     addLayer: function(layer) {
       this.map.addLayer(layer);
     },
-    addTileLayer: function(_layer, _obj) {      _obj = _obj || "";
+    addTileLayer: function(_layer, _obj) {
+      _obj = _obj || "";
       L.tileLayer( _layer, _obj)
         .addTo(this.map);
+    },
+    onAddHandler: function(selector, html) {
+      return function() {
+        this._div = L.DomUtil.create('div', selector);
+        this._div.innerHTML = html;
+        L.DomEvent.disableClickPropagation(this._div);
+        return this._div;
+      };
     },
     addControls: function() {
       var self = this;
       var recallSelector = L.control({position: 'topright'});
-      recallSelector.onAdd = function() {
-        var div = L.DomUtil.create('div', 'info recall-selector');
-        div.innerHTML = '<b>Recall:</b> <div id="recallSelector"></div>';
-        L.DomEvent.disableClickPropagation(div);
-        return div;
-      };
-      recallSelector.addTo(this.map);	
+      recallSelector.onAdd = self.onAddHandler('info recall-selector', '<b>Recall:</b> <div id="recallSelector"></div>');
+      recallSelector.addTo(this.map);
       
       $("#latestFoodRecalls").appendTo("#recallSelector");
         
       self.details = L.control({position: 'bottomright'});
-      self.details.onAdd = function () {		
-        this._div = L.DomUtil.create('div', 'info recall-detail');		
-        L.DomEvent.disableClickPropagation(this._div);	
-        return this._div;		
-      };
+      self.details.onAdd = self.onAddHandler('info recall-detail', '');
       
       self.details.update = function (props) {
           props ? 
@@ -227,35 +227,22 @@
       self.details.addTo(self.map);	
       
       var logo = L.control({position: 'topleft'});
-      logo.onAdd = function () {
-        var div = L.DomUtil.create('div', 'logo');
-        div.innerHTML = '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>';
-        L.DomEvent.disableClickPropagation(div);
-        return div;
-      };
+      logo.onAdd = self.onAddHandler('logo', '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>');        
       logo.addTo(self.map);	
       
       var legend = L.control({position: 'bottomleft'});
-      legend.onAdd = function () {
-        var div = L.DomUtil.create('div', 'info');
-        div.innerHTML = '<b>Legend</b><br><br><div><span class="legendBlock origin"></span> Origin</div>'+
+      var legendHtml = '<b>Legend</b><br><br><div><span class="legendBlock origin"></span> Origin</div>'+
                   '<br><div><span class="legendBlock destination"></span> Destination</div>'+
                   '<br><div><span class="legendBlock originDestination"></span> Origin & Destination</div>';
-        L.DomEvent.disableClickPropagation(div);
-        return div;
-      };
+      legend.onAdd = self.onAddHandler('info', legendHtml);      
       legend.addTo(self.map);	
       
       var splash = L.control({position: 'topleft'});
-      splash.onAdd = function () {
-        var div = L.DomUtil.create('div', 'splash');
-        div.innerHTML = '<b>Welcome to Foodwatch!</b> <br><br> Select a recall event in the drop down to see the source '+
+      var splashHtml = '<b>Welcome to Foodwatch!</b> <br><br> Select a recall event in the drop down to see the source '+
         'state of the food item recall and the states to which the product was shipped.  The top 10 most recent '+
         'recall items are shown from open.fda.gov'+		
         '<div id="gotit"><a href="#" >Got it!</a></div>';
-        L.DomEvent.disableClickPropagation(div);
-        return div;
-      };
+      splash.onAdd = self.onAddHandler('splash', splashHtml);   
       splash.addTo(self.map);
     }
   };
