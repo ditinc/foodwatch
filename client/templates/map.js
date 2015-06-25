@@ -184,17 +184,16 @@
       L.tileLayer( _layer, _obj)
         .addTo(this.map);
     },
-    
+    layerOnAddHandler: function(selector, html) {
+      var div = L.DomUtil.create('div', selector);
+      div.innerHTML = html;
+      L.DomEvent.disableClickPropagation(div);
+      return div;
+    },
     addControls: function() {
       var self = this;
       var recallSelector = L.control({position: 'topright'});
-      recallSelector.onAdd = function () {
-        var div = L.DomUtil.create('div', 'info recall-selector');
-        div.innerHTML = '<b>Recall:</b> <div id="recallSelector"></div>';
-        L.DomEvent.disableClickPropagation(div);
-        return div;
-      };
-      
+      recallSelector.onAdd = self.layerOnAddHandler('info recall-selector', '<b>Recall:</b> <div id="recallSelector"></div>');
       recallSelector.addTo(this.map);	
       
       $("#latestFoodRecalls").appendTo("#recallSelector");
@@ -230,12 +229,7 @@
       self.details.addTo(self.map);	
       
       var logo = L.control({position: 'topleft'});
-      logo.onAdd = function () {
-        var div = L.DomUtil.create('div', 'logo');
-        div.innerHTML = '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>';
-        L.DomEvent.disableClickPropagation(div);
-        return div;
-      };
+      logo.onAdd = self.layerOnAddHandler('logo', '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>');
       logo.addTo(self.map);	
       
       var legend = L.control({position: 'bottomleft'});
