@@ -63,13 +63,10 @@ Unit tests are written using Jasmine and run using the Velocity test runner for 
 ### Running
 [![Deploy to Tutum](https://s.tutum.co/deploy-to-tutum.svg)](https://dashboard.tutum.co/stack/deploy/)
 
-There are several ways to run the application. You can use the badge above to create the Tutum stack (some environmental variables required), follow the instructions in the Development section.
-
-Or you can launch the Docker container.
+There are several ways to run the application. You can use the badge above to create the Tutum stack (some environmental variables required), follow the instructions in the Development section, or launch the Docker container with the directions below:
  
-1. Set the following environmental variables. (We plan to add additional configuration options in the future, including detecting the lack of these variables and adjusting.)
+1. Set the following environmental variable
   * SSL_CERT: Base64-encoded DER private key and certificate, all on one line, with the text ```\n``` replacing line separators
-  * NEW_RELIC_LICENSE_KEY: The API key provided by New Relic
 2. Launch the required Mongo database: ```docker run -d --name mongo mongo```
 3. Launch the Foodwatch container: ```docker run -d --name foodwatch --link mongo:mongo -e ROOT_URL=http://localhost -p 80:80 sjmatta/foodwatch```
 4. Navigate to http://localhost/
