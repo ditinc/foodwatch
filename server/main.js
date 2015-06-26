@@ -1,4 +1,4 @@
-/*globals _, moment, Meteor, console */
+/*globals _, moment, Meteor, console, async */
 /*globals FoodRecalls */
 /*jshint curly:false */
 (function() {
@@ -61,7 +61,7 @@
       };
       var endpoint = Meteor.call("buildEndpoint", endpointOptions);
       if (Meteor.settings.debug) console.log('endpoint:', endpoint);
-      return Meteor.call('fetchResponse', endpoint);
+      return Meteor.call('fetchAsyncResponse', endpoint);
     },
     /**
      * After the server is running, periodically poll the remote API for new data. 
@@ -81,12 +81,12 @@
       };
       var endpoint = Meteor.call("buildEndpoint", endpointOptions);
       if (Meteor.settings.debug) console.log('endpoint:', endpoint);
-      return Meteor.call('fetchResponse', endpoint);
+      return Meteor.call('fetchAsyncResponse', endpoint);
     },
     /**
      * Fetch the data asynchronously using HTTP GET.
      */
-    fetchResponse: function(endpoint) {
+    fetchAsyncResponse: function(endpoint) {
       this.unblock();
       var response;
       try {
@@ -115,11 +115,22 @@
    * Called upon initial server warm-up
    */
   Meteor.startup(function(){
-    Meteor.call('getInitialFoodRecalls');
+    async.auto({
+      getInitialFoodRecalls: function(callback, results) {
+        var upserts = Meteor.call('getInitialFoodRecalls');
+        callback(null, upserts);
+      }
+    }, function(err, results) {
+      if (err) {
+        console.log('err: ', err);
+        return;
+      }
+      if (Meteor.settings.debug) { console.log('getInitialFoodRecalls.upserts.length: ', results.getInitialFoodRecalls.length); }
+    });
     Meteor.setInterval(function() {
-      var upserts = Meteor.call('pollFoodRecalls');
-      if (Meteor.settings.debug) console.log('pollFoodRecalls.upserts:', upserts);
-    }, Meteor.settings.POLL_TIMER_SECONDS * 1000);
+          var upserts = Meteor.call('pollFoodRecalls');
+          if (Meteor.settings.debug) console.log('pollFoodRecalls.upserts.length:', upserts.length);
+        }, Meteor.settings.POLL_TIMER_SECONDS * 1000);
   });
   
 })();

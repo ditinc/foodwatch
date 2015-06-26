@@ -14,3 +14,4 @@ francocatena:select2
 velocity:html-reporter
 reactive-var
 reactive-dict
+peerlibrary:async
