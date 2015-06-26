@@ -9,6 +9,7 @@
                     <option value="10">10</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
+                    <option value="100">100</option>
                 </select>
                 <input type="button" id="applyFilter" value="Apply" />
             </div>
@@ -17,7 +18,7 @@
                 <select id="latestFoodRecalls" name="latestFoodRecalls" class="recall-selector">
                     <option value="">Select a recall</option>  
                 {{#each latestFoodRecalls}}
-                    <option value="{{this.recall_number}}">{{this.recalling_firm}}</option>
+                    <option value="{{this.recall_number}}">{{this.recalling_firm}} - {{formatDate this.report_date}}</option>
                 {{/each}}
                 </select>
             </div>

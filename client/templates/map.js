@@ -1,5 +1,5 @@
 /*LUtil is inspired by leaflet-demo (https://github.com/MeteorHudsonValley/leaflet-demo) */
-/*globals window, L, $, Tracker, Template, Meteor, console, Session, _, ReactiveVar, ReactiveDict*/
+/*globals window, L, $, Tracker, Template, Meteor, console, Session, _, ReactiveVar, ReactiveDict, moment*/
 /*globals FoodRecalls, StatesData */
 (function () {
   "use strict";
@@ -289,6 +289,10 @@
     latestFoodRecalls: function() {
       var self = Template.instance();
       return self.latestFoodRecalls();
+    },
+    formatDate: function(report_date) {
+      if (Meteor.settings.debug) { console.log('report_date: ', report_date); }
+      return moment(report_date, 'YYYYMMDD').format('M/DD/YYYY');
     }
   });
   
@@ -319,10 +323,7 @@
   
   Template.map.rendered = function(){    
     window.LUtil.initMap();
-    console.log('rendered');
-    $('#latestFoodRecalls').select2({
-      placeholder: 'Select a Recall'
-    });
+    $('#latestFoodRecalls').select2({});
     $('.recall-detail').hide();        
   };
 })();
