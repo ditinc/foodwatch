@@ -11,8 +11,9 @@
     currentOrigin: null,
     lines: [],
     currentDestinations: [],
+    originMarker: null,
     // location of marker images
-    imagePath : 'packages/mrt_leaflet-0.6.4/images',
+    imagePath : 'packages/bevanhunt_leaflet/images',
     // init function to be called ONCE on startup
     initLeaflet: function(){    
       $(window).resize(function() {
@@ -53,7 +54,8 @@
       });
     
       self.geojson = L.geoJson(StatesData, {
-        style:this.styleDefault		
+        style:this.styleDefault,
+        onEachFeature: this.onEachFeature
       }).addTo(this.map);
       
       this.addControls();
@@ -84,6 +86,21 @@
         }
       }
     },
+    markOrigin: function(city, state, mfg){
+    	var self = this;    	
+    	if(city == null || state == null){
+    		return;    		
+    	}
+    	if(self.originMarker!=null){
+			self.map.removeLayer(self.originMarker); 
+		}  
+    	var search = $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + city + " "+state, function(data){
+    		var latlon = [data[0].lat, data[0].lon];
+    		var tempData = data;    		  		   		
+    		self.originMarker = L.marker(latlon).addTo(self.map);
+    		self.originMarker.bindPopup("<b>"+mfg+"</b><br />"+city+", "+state).openPopup();
+    	});       
+    },
     highlightDestination: function(states){
       var self = this;
       if(self.currentDestinations.length!==0){
@@ -108,7 +125,7 @@
           if (self.geojson._layers.hasOwnProperty(key)) {
           //var props = self.geojson._layers[key].feature.properties;
           if(self.geojson._layers[key].feature.properties.abbreviation === states[st]) {
-            self.currentDestinations.push(self.geojson._layers[key]);
+        	self.currentDestinations.push(self.geojson._layers[key]);
             var fillColor = "red";
             var fillOpacity = 0.2;
             if(self.currentOrigin === self.geojson._layers[key]){
@@ -128,12 +145,22 @@
       }
     },
     
+    getStateName : function(stateAbbr){
+    	for(var j = 0; j<StatesData.features.length; j++){
+   	        if (StatesData.features[j].properties.abbreviation == stateAbbr){       	    	   
+   	    		 return StatesData.features[j].properties.name; 	    	  
+   	        }
+    	}
+    	return null;
+           
+    },
+    
     parseStates : function(states){
       var parsedStates = [];
       var acceptedDelimiters = [" ", ",", "", "(", ")","&","."];
       var nationwide = false;
       
-      if(states.indexOf("nationwide") >= 0){
+      if(states.toLowerCase().indexOf("nationwide") >= 0){
         nationwide = true;
       }
       
@@ -154,6 +181,9 @@
       }     
       return parsedStates;
     },
+    onEachFeature: function(feature, layer) {
+		
+	},
     styleDefault: function() {
       return {
         weight: 2,
@@ -195,7 +225,16 @@
     addControls: function() {
       var self = this;
       var recallSelector = L.control({position: 'topright'});
-      recallSelector.onAdd = self.onAddHandler('info recall-selector', '<b>Recall:</b> <div id="recallSelector"></div>');
+      
+          var div = L.DomUtil.create('div', 'info recall-selector');
+          
+          div.innerHTML = selectors;
+          
+          L.DomEvent.disableClickPropagation(div);
+          return div;
+          
+        };     
+      
       recallSelector.addTo(this.map);
       
       $("#latestFoodRecalls").appendTo("#recallSelector");
@@ -248,34 +287,40 @@
   };
   
   Template.map.events(
-    {'change select' : function(event){    
-      var val = $(event.currentTarget).val();    
-      if (val === '') {
-        return;
-      }
-      
-      var fr = FoodRecalls.find({}).fetch();
-      var originState = null;
-      var destinationStates = null;
-      
-      for(var i = 0; i<fr.length; i++){
-        if(fr[i].recall_number === val){			
-          window.LUtil.details.update(fr[i]);	
-          originState = fr[i].state;
-          destinationStates = fr[i].distribution_pattern;
-        }
-      }
-      
-      for(var j = 0; j<StatesData.features.length; j++){
-        if(StatesData.features[j].properties.abbreviation === originState){				
-            window.LUtil.highlightOrigin(originState);
-            window.LUtil.highlightDestination(destinationStates);
-        }     
-      }
-      
-      if (Meteor.settings.debug) {
-        console.log('change select val:', val);
-      }
+    {    
+    'change #latestFoodRecalls' : function(event, template){
+    	var self = this;
+		var val = $(event.currentTarget).val();    
+	    if (val === '') {
+	      return;
+	    }
+	    
+	    var fr = FoodRecalls.find({}).fetch(); //TODO: change this use findOne and recall_number as criteria
+	    var originState = null;
+	    var originCity = null;
+	    var mfg = null;
+	    var destinationStates = null;
+	    
+	    for(var i = 0; i<fr.length; i++){
+	      if(fr[i].recall_number==val){			
+	        window.LUtil.details.update(fr[i]);	
+	        originState = fr[i].state;
+	        originCity = fr[i].city;
+	        mfg = fr[i].recalling_firm;
+	        destinationStates = fr[i].distribution_pattern;
+	      }
+	    }
+	    
+	    window.LUtil.markOrigin(originCity,originState,mfg);    	
+	    
+	    for(var j = 0; j<StatesData.features.length; j++){
+	      if(StatesData.features[j].properties.abbreviation==originState){				
+	          window.LUtil.highlightOrigin(originState);
+	          window.LUtil.highlightDestination(destinationStates);
+	      }     
+	    }
+	    
+	      if (Meteor.settings.debug) console.log('change select val:', val);
     }, 'click #gotit' : function(){   
       $(".splash").hide();
     }, 'click #affordanceOpen': function(){   
