@@ -12,3 +12,5 @@ http
 bevanhunt:leaflet
 francocatena:select2
 velocity:html-reporter
+reactive-var
+reactive-dict
