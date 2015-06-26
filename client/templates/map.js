@@ -226,7 +226,10 @@
       var self = this;
       var recallSelector = L.control({position: 'topright'});
       
+      recallSelector.onAdd = function (map) {// TODO: Add State selector here
           var div = L.DomUtil.create('div', 'info recall-selector');
+          var selectors = "";       
+          selectors += '</select></div><b>Recall:</b> <div id="recallSelector"></div>';
           
           div.innerHTML = selectors;
           
