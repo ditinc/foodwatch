@@ -88,10 +88,10 @@
     },
     markOrigin: function(city, state, mfg){
     	var self = this;    	
-    	if(city == null || state == null){
+    	if(city === null || state === null){
     		return;    		
     	}
-    	if(self.originMarker!=null){
+    	if(self.originMarker!==null){
 			self.map.removeLayer(self.originMarker); 
 		}  
     	var search = $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + city + " "+state, function(data){
@@ -147,7 +147,7 @@
     
     getStateName : function(stateAbbr){
     	for(var j = 0; j<StatesData.features.length; j++){
-   	        if (StatesData.features[j].properties.abbreviation == stateAbbr){       	    	   
+   	        if (StatesData.features[j].properties.abbreviation === stateAbbr){       	    	   
    	    		 return StatesData.features[j].properties.name; 	    	  
    	        }
     	}
@@ -293,7 +293,7 @@
 	    var destinationStates = null;
 	    
 	    for(var i = 0; i<fr.length; i++){
-	      if(fr[i].recall_number==val){			
+	      if(fr[i].recall_number === val){			
 	        window.LUtil.details.update(fr[i]);	
 	        originState = fr[i].state;
 	        originCity = fr[i].city;
@@ -305,7 +305,7 @@
 	    window.LUtil.markOrigin(originCity,originState,mfg);    	
 	    
 	    for(var j = 0; j<StatesData.features.length; j++){
-	      if(StatesData.features[j].properties.abbreviation==originState){				
+	      if(StatesData.features[j].properties.abbreviation === originState){				
 	          window.LUtil.highlightOrigin(originState);
 	          window.LUtil.highlightDestination(destinationStates);
 	      }     
