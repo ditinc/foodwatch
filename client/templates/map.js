@@ -1,5 +1,5 @@
 /*LUtil is inspired by leaflet-demo (https://github.com/MeteorHudsonValley/leaflet-demo) */
-/*globals window, L, $, Tracker, Template, Meteor, console, Session, _*/
+/*globals window, L, $, Tracker, Template, Meteor, console, Session, _, ReactiveVar, ReactiveDict, moment*/
 /*globals FoodRecalls, StatesData */
 (function () {
   "use strict";
@@ -44,15 +44,6 @@
         view.zoom
       );
       
-      Tracker.autorun(function() {        
-        if (Session.get('LatestFoodRecallsIsReady')) {
-          // The data from the server is ready.
-          var latestFoodRecallsCursor = FoodRecalls.find({});        
-          self.latestFoodRecalls = latestFoodRecallsCursor.fetch();        
-          if (Meteor.settings.debug) { console.log("latestFoodRecalls data is ready: ", self.latestFoodRecalls); }
-        }
-      });
-    
       self.geojson = L.geoJson(StatesData, {
         style:this.styleDefault,
         onEachFeature: this.onEachFeature
@@ -226,9 +217,8 @@
       var self = this;
       var recallSelector = L.control({position: 'topright'});
       recallSelector.onAdd = self.onAddHandler('info recall-selector', '<b>Recall:</b> <div id="recallSelector"></div>');
-      recallSelector.addTo(this.map);      
-      
-      $("#latestFoodRecalls").appendTo("#recallSelector");
+      recallSelector.addTo(this.map);
+      $("#latestFoodRecallForm").appendTo("#recallSelector").show();
         
       self.details = L.control({position: 'bottomright'});
       self.details.onAdd = self.onAddHandler('info recall-detail', '');
@@ -275,60 +265,101 @@
       splash.onAdd = self.onAddHandler('splash', splashHtml);   
       splash.addTo(self.map);
     }
-  };
-  
-  Template.map.events(
-    {    
-    'change #latestFoodRecalls' : function(event, template){
-    	var self = this;
-		var val = $(event.currentTarget).val();    
-	    if (val === '') {
-	      return;
-	    }
-	    
-	    var fr = FoodRecalls.find({}).fetch(); //TODO: change this use findOne and recall_number as criteria
-	    var originState = null;
-	    var originCity = null;
-	    var mfg = null;
-	    var destinationStates = null;
-	    
-	    for(var i = 0; i<fr.length; i++){
-	      if(fr[i].recall_number === val){			
-	        window.LUtil.details.update(fr[i]);	
-	        originState = fr[i].state;
-	        originCity = fr[i].city;
-	        mfg = fr[i].recalling_firm;
-	        destinationStates = fr[i].distribution_pattern;
-	      }
-	    }
-	    
-	    window.LUtil.markOrigin(originCity,originState,mfg);    	
-	    
-	    for(var j = 0; j<StatesData.features.length; j++){
-	      if(StatesData.features[j].properties.abbreviation === originState){				
-	          window.LUtil.highlightOrigin(originState);
-	          window.LUtil.highlightDestination(destinationStates);
-	      }     
-	    }
-	    
-	      if (Meteor.settings.debug) console.log('change select val:', val);
+  };  
+
+  Template.map.events({
+    'change #latestFoodRecalls': function() {
+      var val = $('#latestFoodRecalls').select2('val');
+      if (Meteor.settings.debug) { console.log('change select val:', val); }
+      
+      if (_.isUndefined(val) || _.isEmpty(val)) {
+        // TODO: reset the map
+        return;
+      }
+      
+      var self = Template.instance();      
+      var fr = self.latestFoodRecalls().fetch();
+      var originState = null;
+      var originCity = null;
+	  var mfg = null;
+      var destinationStates = null;
+      
+      for(var i = 0; i<fr.length; i++){
+        if(fr[i].recall_number === val){			
+          window.LUtil.details.update(fr[i]);	
+          originState = fr[i].state;
+          originCity = fr[i].city;
+	      mfg = fr[i].recalling_firm;
+          destinationStates = fr[i].distribution_pattern;
+        }
+      }
+      
+      window.LUtil.markOrigin(originCity,originState,mfg);    	
+      
+      for(var j = 0; j<StatesData.features.length; j++){
+        if(StatesData.features[j].properties.abbreviation === originState){				
+            window.LUtil.highlightOrigin(originState);
+            window.LUtil.highlightDestination(destinationStates);
+        }     
+      }
     }, 'click #gotit' : function(){   
       $(".splash").hide();
     }, 'click #affordanceOpen': function(){   
       $(".splash").show();
+    }, 'click #applyFilter': function(event, template) {
+      // we could build a more complicated filter, but only grabbing the
+      // latestFoodRecallReasonFilter from the DOM.
+      var reasonFilter = $('#latestFoodRecallReasonFilter').val();
+      var limit = parseInt($('#latestFoodRecallLimit').val(), 10);
+      console.log('limitval: ', limit);
+      if (Meteor.settings.debug) { console.log('reasonFilter:', reasonFilter); }
+      // set the reactive var with updated filter, this.autorun within the
+      // create method will re-run the subscription with the new value every
+      // time this changes.
+      template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
+      template.limit.set(limit); 
     }
   });
   
   Template.map.helpers({
     latestFoodRecalls: function() {
-      return FoodRecalls.latest();
+      var self = Template.instance();
+      return self.latestFoodRecalls();
+    },
+    formatDate: function(report_date) {
+      if (Meteor.settings.debug) { console.log('report_date: ', report_date); }
+      return moment(report_date, 'YYYYMMDD').format('M/DD/YYYY');
     }
   });
   
-  Template.map.created = function(){};
+  Template.map.created = function() {
+    var self = Template.instance();
+    self.filter = new ReactiveVar({});
+    self.limit = new ReactiveVar(10);    
+    this.autorun(function () {
+      // TODO: show loading indicator.
+      if (Meteor.settings.debug) { console.log("filter: " + self.filter.get()); }
+      if (Meteor.settings.debug) { console.log("limit: " + self.limit.get()); }
+      self.subscription = self.subscribe('LatestFoodRecalls', self.filter.get(), self.limit.get());
+      if (self.subscription.ready()) {
+        // reset the select2 interface and hide the details
+        $('#latestFoodRecalls').val('');
+        $('#latestFoodRecalls').select2();
+        $('.recall-detail').hide();
+      }
+    });
+    self.latestFoodRecalls = function() {
+      if (self.subscription.ready()) {
+        return FoodRecalls.latest(self.filter.get(), self.limit.get());
+      } else {
+        return false;
+      } 
+    };
+  };
   
-  Template.map.rendered = function(){
-    // Initialize the map view
+  Template.map.rendered = function(){    
     window.LUtil.initMap();
+    $('#latestFoodRecalls').select2({});
+    $('.recall-detail').hide();        
   };
 })();

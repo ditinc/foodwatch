@@ -1,12 +1,27 @@
 <template name="map">
 	<div class="row">
-        <div style="display:none;">
-            <label for="latestFoodRecalls">Latest Food Recalls:</label>
-            <select id="latestFoodRecalls" name="latestFoodRecalls" class="recall-selector">
-            {{#each latestFoodRecalls}}
-                <option value="{{this.recall_number}}">{{this.recalling_firm}}</option>  
-            {{/each}}
-            </select>
+        <div id="latestFoodRecallForm" style="display:none;">
+            <div>
+                <label for="latestFoodRecallReasonFilter">Reason Filter</label>
+                <input id="latestFoodRecallReasonFilter" type="text" name="latestFoodRecallReasonFilter"/>
+                <label for="latestFoodRecallLimit">Limit</label>
+                <select id="latestFoodRecallLimit" name="latestFoodRecallLimit">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <input type="button" id="applyFilter" value="Apply" />
+            </div>
+            <div>
+                <label for="latestFoodRecalls">Latest Food Recalls:</label>
+                <select id="latestFoodRecalls" name="latestFoodRecalls" class="recall-selector">
+                    <option value="">Select a recall</option>  
+                {{#each latestFoodRecalls}}
+                    <option value="{{this.recall_number}}">{{this.recalling_firm}} - {{formatDate this.report_date}}</option>
+                {{/each}}
+                </select>
+            </div>
         </div>
     </div>
     <div id="map" class="map"></div>		
