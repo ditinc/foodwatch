@@ -1,6 +1,6 @@
 # Foodwatch
 
-Foodwatch is an open web application that consumes data from the FDA Food Enforcements Report API (URL) and allows a visitor to select and display the reported event on a map.  The visitor is then able to highlight states to which that recalled food item was shipped.  This proof of concept consumes the 10 most recent events.
+Foodwatch is an open web application that consumes data from the FDA Food Enforcements Report API (https://open.fda.gov/food/enforcement/) and allows a visitor to select and display the reported event on a map.  The visitor is then able to highlight states to which that recalled food item was shipped.  This proof of concept consumes the 10 most recent events.
 
 Type | URL
 ---- | ---
