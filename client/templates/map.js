@@ -252,7 +252,7 @@
             this._div.innerHTML = (props ?
               '<div class="recallDetailsHeader"><div><a href="#" id="detMinMax" class="pull-left"><span id="detMinMaxSpan" class="glyphicon glyphicon-minus"></span></a></div><div> Recall Details </div></div>' +
               '<br><div id = "recallDetails">'+              
-              '<div><b>Date Reported : </b>' + props.report_date + '</div>' +
+              '<div><b>Date Reported : </b>' + moment(props.report_date, 'YYYYMMDD').format('MMMM DD, YYYY') + '</div>' +
               '<div><b>Status : </b>' + props.status + '</div>' +
               '<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +
               '<div><b>Product Description : </b>' + props.product_description + '</div>' +              
@@ -261,7 +261,7 @@
               '<div><b>Code Information : </b>' + props.code_info + '</div>' +
               '<div><b>Product Type : </b>' + props.product_type + '</div>' +
               '<div><b>Recall # : </b>' + props.recall_number + '</div>' +              
-              '<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' + 
+              '<div><b>Date Initiated : </b>' + moment(props.recall_initiation_date, 'YYYYMMDD').format('MMMM DD, YYYY') + '</div>' + 
               '<div><b>Classification : </b>' + props.classification + '</div>' +              
               '<div><b>State : </b>' + props.state + '</div>' +
               '<div><b>City : </b>' + props.city + '</div>' +
