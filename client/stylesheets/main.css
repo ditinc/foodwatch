@@ -7,6 +7,17 @@ body {
   font-family: Arial;
 }
 
+.foodwatchLabel {
+  font-weight: bold;
+  font-family: Fjalla One;
+}
+
+#affordanceOpen {
+  color: #0078A8;
+  margin-left: 5px;
+  font-size: small;
+}
+
 #recallLimit{
 	padding: 6px 8px;
 }

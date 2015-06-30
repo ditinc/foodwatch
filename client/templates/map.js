@@ -1,5 +1,5 @@
 /*LUtil is inspired by leaflet-demo (https://github.com/MeteorHudsonValley/leaflet-demo) */
-/*globals window, L, $, Tracker, Template, Meteor, console, Session, _, ReactiveVar, ReactiveDict, moment*/
+/*globals window, L, $, Template, Meteor, console, _, ReactiveVar, moment*/
 /*globals FoodRecalls, StatesData */
 (function () {
   "use strict";
@@ -228,6 +228,14 @@
         L.DomEvent.disableClickPropagation(this._div);
         return this._div;
       };
+    },    
+    onAddHandlerWithTemplate: function(selector, template) {
+      return function() {
+        this._div = L.DomUtil.create('div', selector);
+        Blaze.render(template, this._div);
+        L.DomEvent.disableClickPropagation(this._div);
+        return this._div;
+      };
     },
     addControls: function() {
       var self = this;
@@ -244,28 +252,28 @@
             this._div.innerHTML = (props ?
               '<div class="recallDetailsHeader"><div><a href="#" id="detMinMax" class="pull-left"><span id="detMinMaxSpan" class="glyphicon glyphicon-minus"></span></a></div><div> Recall Details </div></div>' +
               '<br><div id = "recallDetails">'+
-              '<div><b>Recall # : </b>' + props.recall_number + '</div>' +
+              '<h3>Recall Details</h3>' +
               '<div><b>Date Reported : </b>' + props.report_date + '</div>' +
-              '<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' +
-              '<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +										
               '<div><b>Status : </b>' + props.status + '</div>' +
-              '<div><b>Classification : </b>' + props.classification + '</div>' +
+              '<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +
+              '<div><b>Product Description : </b>' + props.product_description + '</div>' +              
+              '<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div>' +
+              '<div><b>Product Quantity : </b>' + props.product_quantity + '</div>' +
               '<div><b>Code Information : </b>' + props.code_info + '</div>' +
+              '<div><b>Product Type : </b>' + props.product_type + '</div>' +
+              '<div><b>Recall # : </b>' + props.recall_number + '</div>' +              
+              '<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' + 
+              '<div><b>Classification : </b>' + props.classification + '</div>' +              
               '<div><b>State : </b>' + props.state + '</div>' +
               '<div><b>City : </b>' + props.city + '</div>' +
-              '<div><b>Distribution Pattern : </b>' + props.distribution_pattern + '</div>' +
-              '<div><b>Product Description : </b>' + props.product_description + '</div>' +
-              '<div><b>Product Quantity : </b>' + props.product_quantity + '</div>' +
-              '<div><b>Product Type : </b>' + props.product_type + '</div>' +
-              '<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div>'+
-              '</div>'
+              '<div><b>Distribution Pattern : </b>' + props.distribution_pattern + '</div>'
               : 'Select a Recall') : this.hide();
               $('.recall-detail').show();
         };
       self.details.addTo(self.map);	
       
       var logo = L.control({position: 'topleft'});
-      logo.onAdd = self.onAddHandler('logo', '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>');        
+      logo.onAdd = self.onAddHandlerWithTemplate('logo', Template.mapLabel);
       logo.addTo(self.map);	
       
       var legend = L.control({position: 'bottomleft'});
@@ -407,9 +415,7 @@
     		$(".recall-detail").css({"height":"38px"});
     	}       	
     },
-    'click #applyFilter': function(event, template) {
-      // we could build a more complicated filter, but only grabbing the
-      // latestFoodRecallReasonFilter from the DOM.
+    'click #applyFilter': function(event, template) {    
       var reasonFilter = $('#latestFoodRecallReasonFilter').val();
       var limit = parseInt($('#latestFoodRecallLimit').val(), 10);
       console.log('limitval: ', limit);
