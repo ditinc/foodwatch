@@ -1,6 +1,6 @@
 # Foodwatch
 
-Foodwatch is an open web application that consumes data from the FDA Food Enforcements Report API (https://open.fda.gov/food/enforcement/) and allows a visitor to select and display the reported event on a map.  The visitor is then able to highlight states to which that recalled food item was shipped.  This proof of concept consumes the 10 most recent events.
+Foodwatch is an open web application that consumes data from the FDA Food Enforcements Report API (https://open.fda.gov/food/enforcement/) and allows a visitor to select and display the reported event on a map.  The visitor is then able to highlight states to which that recalled food item was shipped.  This proof of concept consumes the events from the past 60 days.
 
 Type | URL
 ---- | ---
@@ -19,8 +19,10 @@ Master Branch :rocket: | http://foodwatch-proxy-snapshot.foodwatch-stack-snapsho
 
 Our development process requires selection of a project lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.  On most projects, DevOps would be a separate team member, but due to the small size of this project, the lead handled the DevOps setup and tweaks.  We conduct code review directly in GitHub through comments and issues and in our Slack (http://slack.com) collaboration environment.  Issues are automatically synced with Waffle.io Agile boards.
 
+All items marked under milestone 1.0 were part of the original prototype, and were delivered on June 23, 2015.  Items under milestone 1.1 were developed after the prototype delivery date was extended and were delived on June 30, 2015.
+
 ## Technology Stack
-Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetMaps as the mapping layer and map provider.  We leverage CircleCI for continuous integration.  The app is deployed in a Docker container hosted on DigitalOcean.  We leverage Tutum to manage the Docker container on DigitalOcean.
+Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetMaps as the mapping layer and map provider, with Twitter Bootstrap as the CSS framework.  We leverage CircleCI for continuous integration.  The app is deployed in a Docker container hosted on DigitalOcean.  We leverage Tutum to manage the Docker container on DigitalOcean.
 
 Most of the technologies in Foodwatch are free and open source.  However, several tools used in the development process are only free to use on open source projects.  These include Tutum, CircleCI, and NewRelic.  The software licensing is as follows:
 
@@ -31,6 +33,7 @@ Most of the technologies in Foodwatch are free and open source.  However, severa
 - OpenStreetMap: ODbL
 - HAProxy: GPL v2.0
 - Docker: Apache 2.0
+- Twitter Bootstrap: MIT
 
 Use of Foodwatch is limited by the licensing of its component parts.  The Foodwatch source code is licensed under GPL v3.0.
 
