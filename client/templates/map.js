@@ -12,6 +12,8 @@
     lines: [],
     currentDestinations: [],
     originMarker: null,
+    detMinMax: 1,
+    filMinMax:1,
     // location of marker images
     imagePath : 'packages/bevanhunt_leaflet/images',
     // init function to be called ONCE on startup
@@ -72,6 +74,7 @@
       }
     },
     resetMap: function(){
+  	  $('.recall-detail').hide();
     	var self = this;
     	if(self.currentDestinations.length!==0){
             for(var state in self.currentDestinations){
@@ -96,6 +99,11 @@
         if(self.currentOrigin !== null){
             self.geojson.resetStyle(self.currentOrigin);					
         }
+        
+        window.LUtil.detMinMax = 1;		
+		$("#detMinMaxSpan").removeClass("glyphicon glyphicon-plus")
+		$("#detMinMaxSpan").addClass("glyphicon glyphicon-minus")
+		$(".recall-detail").css({"height":"250px"});
     	
     },    
     markOrigin: function(city, state, mfg){
@@ -224,7 +232,7 @@
     addControls: function() {
       var self = this;
       var recallSelector = L.control({position: 'topright'});
-      recallSelector.onAdd = self.onAddHandler('info recall-selector', '<b>Recall Filtering:</b> <div id="recallSelector"></div>');
+      recallSelector.onAdd = self.onAddHandler('info', '<b>  Recall Filtering </b><a href="#" id="filMinMax" class="pull-left"><span id="filMinMaxSpan" class="glyphicon glyphicon-minus"></span></a> <div id="recallSelector"></div>');
       recallSelector.addTo(this.map);
       $("#latestFoodRecallForm").appendTo("#recallSelector").show();
       
@@ -234,7 +242,8 @@
       self.details.update = function (props) {
           props ? 
             this._div.innerHTML = (props ?
-              '<h3>Recall Details</h3>' +
+              '<div class="recallDetailsHeader"><div><a href="#" id="detMinMax" class="pull-left"><span id="detMinMaxSpan" class="glyphicon glyphicon-minus"></span></a></div><div> Recall Details </div></div>' +
+              '<br><div id = "recallDetails">'+
               '<div><b>Recall # : </b>' + props.recall_number + '</div>' +
               '<div><b>Date Reported : </b>' + props.report_date + '</div>' +
               '<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' +
@@ -248,7 +257,8 @@
               '<div><b>Product Description : </b>' + props.product_description + '</div>' +
               '<div><b>Product Quantity : </b>' + props.product_quantity + '</div>' +
               '<div><b>Product Type : </b>' + props.product_type + '</div>' +
-              '<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div>'				
+              '<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div>'+
+              '</div>'
               : 'Select a Recall') : this.hide();
               $('.recall-detail').show();
         };
@@ -317,12 +327,11 @@
 	  	    
 	},	
     'change #latestFoodRecalls': function(event, template) {
-    	window.LUtil.resetMap();
+      window.LUtil.resetMap();
       var val = $('#latestFoodRecalls').select2('val');
       if (Meteor.settings.debug) { console.log('change select val:', val); }
       
       if (_.isUndefined(val) || _.isEmpty(val)) {
-        // TODO: reset the map
         return;
       }
       
@@ -344,15 +353,14 @@
       }
       
       window.LUtil.markOrigin(originCity,originState,mfg); 
-      
-      window.LUtil.resetMap();
-      
+           
       for(var j = 0; j<StatesData.features.length; j++){
         if(StatesData.features[j].properties.abbreviation === originState){				
             window.LUtil.highlightOrigin(originState);
             window.LUtil.highlightDestination(destinationStates);
         }     
       }
+      $('.recall-detail').show();
     },
     'change #latestFoodRecallLimit': function(event, template){
     	var reasonFilter = $('#latestFoodRecallReasonFilter').val();
@@ -370,7 +378,36 @@
       $(".splash").hide();
     }, 'click #affordanceOpen': function(){   
       $(".splash").show();
-    }, 'click #applyFilter': function(event, template) {
+    },
+    'click #filMinMax' : function(){
+    	if(window.LUtil.filMinMax === 0){
+    		window.LUtil.filMinMax = 1;    		
+    		$("#latestFoodRecallForm").show();
+    		$("#filMinMaxSpan").removeClass("glyphicon glyphicon-plus")
+    		$("#filMinMaxSpan").addClass("glyphicon glyphicon-minus")    		
+    	}else if(window.LUtil.filMinMax === 1){
+    		window.LUtil.filMinMax = 0;    		
+    		$("#latestFoodRecallForm").hide();
+    		$("#filMinMaxSpan").removeClass("glyphicon glyphicon-minus")
+	    	$("#filMinMaxSpan").addClass("glyphicon glyphicon-plus")    		
+    	}	
+    },
+    'click #detMinMax' : function(){    	  	
+    	if(window.LUtil.detMinMax === 0){
+    		window.LUtil.detMinMax = 1;    		
+    		$("#recallDetails").show();
+    		$("#detMinMaxSpan").removeClass("glyphicon glyphicon-plus")
+    		$("#detMinMaxSpan").addClass("glyphicon glyphicon-minus")
+    		$(".recall-detail").css({"height":"250px"});
+    	}else if(window.LUtil.detMinMax === 1){
+    		window.LUtil.detMinMax = 0;    		
+    		$("#recallDetails").hide();
+    		$("#detMinMaxSpan").removeClass("glyphicon glyphicon-minus")
+	    	$("#detMinMaxSpan").addClass("glyphicon glyphicon-plus")	
+    		$(".recall-detail").css({"height":"38px"});
+    	}       	
+    },
+    'click #applyFilter': function(event, template) {
       // we could build a more complicated filter, but only grabbing the
       // latestFoodRecallReasonFilter from the DOM.
       var reasonFilter = $('#latestFoodRecallReasonFilter').val();

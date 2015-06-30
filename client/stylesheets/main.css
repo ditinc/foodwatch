@@ -22,15 +22,22 @@ body {
 }
 
 #latestFoodRecallReasonFilter{
-	margin: 10px 0px 0px 4px;
+	margin: 10px 0px 0px -10px;
 	padding: 0px 0px 0px 4px;
 	border-radius: 4px;	
 	font: 14px/22px Arial, Helvetica, sans-serif;
 }
 
 #recallDiv{
-	padding: 10px 4px 4px 4px;
+	padding: 10px 5px 4px 4px;
+	width:305px;
 	float:left;
+}
+
+.recallDetailsHeader{
+	font: 18px/22px Arial, Helvetica, sans-serif;
+	font-weight: bold;	
+	height: 10px;
 }
 
 .originDestination{
@@ -119,8 +126,8 @@ body {
 }
 
 .recall-detail {
-	width:300px; 
-	height:300px;
+	width:320px; 
+	height:250px;
 	overflow: auto;
 }
 
