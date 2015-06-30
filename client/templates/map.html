@@ -1,22 +1,34 @@
 <template name="map">
 	<div class="row">
         <div id="latestFoodRecallForm" style="display:none;">
-            <div>
-                <label for="latestFoodRecallReasonFilter">Reason Filter</label>
-                <input id="latestFoodRecallReasonFilter" type="text" name="latestFoodRecallReasonFilter"/>
-                <label for="latestFoodRecallLimit">Limit</label>
-                <select id="latestFoodRecallLimit" name="latestFoodRecallLimit">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-                <input type="button" id="applyFilter" value="Apply" />
+            <div>                
+                <input id="latestFoodRecallReasonFilter" placeholder="Filter by Recall Reason" type="text" name="latestFoodRecallReasonFilter"/>
+                <input type="button" id="applyFilter" value="Go" />             
             </div>
-            <div>
+            <br>
+            <div>           	
+            	<div id="latestFoodRecallStateDiv" style="float:left;">		
+            		<select id="stateSelector">
+            			{{#each StatesData}}
+            				<option value="{{this.properties.abbreviation}}">{{this.properties.name}}</option>';		                    
+		                {{/each}}
+            		</select>
+            	</div>
+                <div id="latestFoodRecallLimitDiv" style="float:right;">
+	                <label for="latestFoodRecallLimit"># Recalls:</label>	                
+	                <select id="latestFoodRecallLimit" name="latestFoodRecallLimit">
+	                    <option value="10">10</option>
+	                    <option value="25">25</option>
+	                    <option value="50">50</option>
+	                    <option value="100">100</option>
+	                </select>  
+                </div>              
+            </div>    
+                 
+            <div id="recallDiv">            	
                 <label for="latestFoodRecalls">Latest Food Recalls:</label>
-                <select id="latestFoodRecalls" name="latestFoodRecalls" class="recall-selector">
-                    <option value="">Select a recall</option>  
+                <select id="latestFoodRecalls" name="latestFoodRecalls" class="recall-selector">   
+                <option value=""></option>                    
                 {{#each latestFoodRecalls}}
                     <option value="{{this.recall_number}}">{{this.recalling_firm}} - {{formatDate this.report_date}}</option>
                 {{/each}}

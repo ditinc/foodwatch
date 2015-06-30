@@ -25,17 +25,19 @@
       test_LUtil.geojson = window.fakeGeojson;
       test_LUtil.highlightOrigin('123');
       expect(test_LUtil.currentOrigin).toEqual(null);
-    });
+    });    
     it("should highlight destinations of valid states", function() {
+      test_LUtil.resetMap();
       test_LUtil.geojson = window.fakeGeojson;
       test_LUtil.highlightDestination("AL,AK");
       expect(test_LUtil.currentDestinations).toEqual([window.fakeGeojson._layers[100], window.fakeGeojson._layers[200]]);
-    });
+    });   
     it("should highlight destinations of invalid states", function() {
-      test_LUtil.geojson = window.fakeGeojson;
-      test_LUtil.highlightDestination("ABC,123");
-      expect(test_LUtil.currentDestinations).toEqual([]);
-    });
+        test_LUtil.resetMap();
+        test_LUtil.geojson = window.fakeGeojson;
+        test_LUtil.highlightDestination("ABC,123");
+        expect(test_LUtil.currentDestinations).toEqual([]);
+      });
     it("template should show latestFoodRecalls select", function() {
       var div = document.createElement("DIV");
       Blaze.render(Template.map, div); 
