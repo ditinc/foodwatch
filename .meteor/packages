@@ -16,3 +16,4 @@ reactive-var
 reactive-dict
 peerlibrary:async
 twbs:bootstrap
+mrt:moment
