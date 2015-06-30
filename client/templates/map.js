@@ -243,20 +243,21 @@
           props ? 
             this._div.innerHTML = (props ?
               '<h3>Recall Details</h3>' +
-              '<div><b>Recall # : </b>' + props.recall_number + '</div>' +
               '<div><b>Date Reported : </b>' + props.report_date + '</div>' +
-              '<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' +
-              '<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +										
               '<div><b>Status : </b>' + props.status + '</div>' +
-              '<div><b>Classification : </b>' + props.classification + '</div>' +
+              '<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +
+              '<div><b>Product Description : </b>' + props.product_description + '</div>' +              
+              '<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div>' +
+              '<div><b>Product Quantity : </b>' + props.product_quantity + '</div>' +
               '<div><b>Code Information : </b>' + props.code_info + '</div>' +
+              '<div><b>Product Type : </b>' + props.product_type + '</div>' +
+              '<div><b>Recall # : </b>' + props.recall_number + '</div>' +              
+              '<div><b>Date Initiated : </b>' + props.recall_initiation_date + '</div>' + 
+              '<div><b>Classification : </b>' + props.classification + '</div>' +              
               '<div><b>State : </b>' + props.state + '</div>' +
               '<div><b>City : </b>' + props.city + '</div>' +
-              '<div><b>Distribution Pattern : </b>' + props.distribution_pattern + '</div>' +
-              '<div><b>Product Description : </b>' + props.product_description + '</div>' +
-              '<div><b>Product Quantity : </b>' + props.product_quantity + '</div>' +
-              '<div><b>Product Type : </b>' + props.product_type + '</div>' +
-              '<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div>'				
+              '<div><b>Distribution Pattern : </b>' + props.distribution_pattern + '</div>'
+             				
               : 'Select a Recall') : this.hide();
               $('.recall-detail').show();
         };
