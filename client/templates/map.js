@@ -226,6 +226,7 @@
         this._div = L.DomUtil.create('div', selector);
         this._div.innerHTML = html;
         L.DomEvent.disableClickPropagation(this._div);
+        L.DomEvent.disableScrollPropagation(this._div);
         return this._div;
       };
     },    
@@ -476,7 +477,6 @@
       });
    
     $("#latestFoodRecallLimit").select2();
-    alert(window.screen.width)
     if(window.screen.width < 800){
     	$("#forkMe").hide();
     }
