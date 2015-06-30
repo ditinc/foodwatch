@@ -15,7 +15,7 @@
     // location of marker images
     imagePath : 'packages/bevanhunt_leaflet/images',
     // init function to be called ONCE on startup
-    initLeaflet: function(){    
+    initLeaflet: function(){  
       $(window).resize(function() {
         $('#map').css('height', window.innerHeight);
       });
@@ -56,14 +56,8 @@
       for (var key in self.geojson._layers) {
         if (self.geojson._layers.hasOwnProperty(key)) {
           //var props = self.geojson._layers[key].feature.properties;
-          if(self.geojson._layers[key].feature.properties.abbreviation === state) {
-            
-            if(self.currentOrigin !== null){
-              self.geojson.resetStyle(self.currentOrigin);					
-            }
-            
-            self.currentOrigin = self.geojson._layers[key];
-            
+          if(self.geojson._layers[key].feature.properties.abbreviation === state) {          
+            self.currentOrigin = self.geojson._layers[key];            
             self.geojson._layers[key].setStyle({
               weight: 2,
               opacity: 1,
@@ -77,15 +71,40 @@
         }
       }
     },
+    resetMap: function(){
+    	var self = this;
+    	if(self.currentDestinations.length!==0){
+            for(var state in self.currentDestinations){
+              if(self.currentOrigin !== self.currentDestinations[state]){
+                self.geojson.resetStyle(self.currentDestinations[state]);	
+              }
+            }
+          }
+          
+          _.each(self.lines, function(line) {
+            self.map.removeLayer(self.lines[line]);
+          });
+          
+          self.lines = [];
+          
+          self.currentDestinations = [];
+          
+        if(self.originMarker!==null){
+        	self.map.removeLayer(self.originMarker); 
+  		}
+        
+        if(self.currentOrigin !== null){
+            self.geojson.resetStyle(self.currentOrigin);					
+        }
+    	
+    },    
     markOrigin: function(city, state, mfg){
     	var self = this;    	
     	if(city === null || state === null){
     		return;    		
     	}
-    	if(self.originMarker!==null){
-			self.map.removeLayer(self.originMarker); 
-		}  
-    	var search = $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + city + " "+state, function(data){
+    	 
+    	var search = $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + city + " "+state+" USA ", function(data){
     		var latlon = [data[0].lat, data[0].lon];
     		var tempData = data;    		  		   		
     		self.originMarker = L.marker(latlon).addTo(self.map);
@@ -93,23 +112,7 @@
     	});       
     },
     highlightDestination: function(states){
-      var self = this;
-      if(self.currentDestinations.length!==0){
-        for(var state in self.currentDestinations){
-          if(self.currentOrigin !== self.currentDestinations[state]){
-            self.geojson.resetStyle(self.currentDestinations[state]);	
-          }
-        }
-      }
-      
-      _.each(self.lines, function(line) {
-        self.map.removeLayer(self.lines[line]);
-      });
-      
-      self.lines = [];
-      
-      self.currentDestinations = [];
-      
+      var self = this;      
       states = this.parseStates(states);
       for(var st = 0; st<states.length; st++){
         for (var key in self.geojson._layers) {
@@ -151,6 +154,7 @@
       var acceptedDelimiters = [" ", ",", "", "(", ")","&","."];
       var nationwide = false;
       
+      //TODO accept "US"
       if(states.toLowerCase().indexOf("nationwide") >= 0){
         nationwide = true;
       }
@@ -173,7 +177,11 @@
       return parsedStates;
     },
     onEachFeature: function(feature, layer) {
-		
+    	layer.on({		
+			click: function(){				
+				$("#stateSelector").select2('val', feature.properties.abbreviation);				
+			}
+		});	
 	},
     styleDefault: function() {
       return {
@@ -216,10 +224,20 @@
     addControls: function() {
       var self = this;
       var recallSelector = L.control({position: 'topright'});
-      recallSelector.onAdd = self.onAddHandler('info recall-selector', '<b>Recall:</b> <div id="recallSelector"></div>');
+      recallSelector.onAdd = self.onAddHandler('info recall-selector', '<b>Recall Filtering:</b> <div id="recallSelector"></div>');
       recallSelector.addTo(this.map);
       $("#latestFoodRecallForm").appendTo("#recallSelector").show();
-        
+      
+      var stateSelector = '<select id="stateSelector">'       	
+        	
+      for(var j = 0; j<StatesData.features.length; j++){
+    	  stateSelector += '<option value="'+StatesData.features[j].properties.abbreviation+'">'+StatesData.features[j].properties.name+'</option>';
+      }
+      
+      stateSelector +='</select>';
+    	  
+    $("#latestFoodRecallStateDiv").html(stateSelector);
+      
       self.details = L.control({position: 'bottomright'});
       self.details.onAdd = self.onAddHandler('info recall-detail', '');
       
@@ -264,11 +282,52 @@
         '<div id="gotit"><a href="#" >Got it!</a></div>';
       splash.onAdd = self.onAddHandler('splash', splashHtml);   
       splash.addTo(self.map);
+    },
+    getCrit: function(state, reasonFilter){
+    	var self = this;
+    	var stateName = this.getStateName(state);
+    	return {$and:[
+                      {$or:[		
+	  					    {state:state},
+						    {state:stateName},
+						    {distribution_pattern:{$regex : ".*"+state+".*"}},
+						    {distribution_pattern:{$regex : ".*"+stateName+".*"}},
+						    {distribution_pattern:{$regex : ".*nationwide.*"}}
+						    ]},
+						    {reason_for_recall: { $regex: reasonFilter, $options: 'i' }}]}
     }
+    
   };  
 
   Template.map.events({
-    'change #latestFoodRecalls': function() {
+     'change #stateSelector' : function(event, template){   	 
+    	 window.LUtil.resetMap();    	 
+    	 var state = $(event.currentTarget).val();
+    	 var self = Template.instance();
+    	 var reasonFilter = $('#latestFoodRecallReasonFilter').val();
+    	 if (state === null) {      		 
+    		self.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
+    		return FoodRecalls.latest(self.filter.get(),self.limit.get());
+ 		}   	    	
+				
+		var limit = parseInt($('#latestFoodRecallLimit').val(), 10);		
+		    	    
+		self.filter.set(window.LUtil.getCrit(state, reasonFilter));
+	    	    	    
+	    var recallsByState = FoodRecalls.find({}, 
+					{sort: {recall_date: -1}, limit: self.limit.get()}).fetch();
+	    
+	    //TODO: check recallsByState and verify elements meet inclusion criteria req.
+	    
+	    self.subscription = self.subscribe('LatestFoodRecalls', self.filter.get(), self.limit.get());
+	    
+	    $("#latestFoodRecalls").select2('data', {id: "", text: "select a recall"}); 
+	        
+	    return FoodRecalls.latest(self.filter.get(), self.limit.get());  
+	  	    
+	},	
+    'change #latestFoodRecalls': function(event, template) {
+    	window.LUtil.resetMap();
       var val = $('#latestFoodRecalls').select2('val');
       if (Meteor.settings.debug) { console.log('change select val:', val); }
       
@@ -294,7 +353,9 @@
         }
       }
       
-      window.LUtil.markOrigin(originCity,originState,mfg);    	
+      window.LUtil.markOrigin(originCity,originState,mfg); 
+      
+      window.LUtil.resetMap();
       
       for(var j = 0; j<StatesData.features.length; j++){
         if(StatesData.features[j].properties.abbreviation === originState){				
@@ -302,7 +363,20 @@
             window.LUtil.highlightDestination(destinationStates);
         }     
       }
-    }, 'click #gotit' : function(){   
+    },
+    'change #latestFoodRecallLimit': function(event, template){
+    	var reasonFilter = $('#latestFoodRecallReasonFilter').val();
+        var limit = parseInt($('#latestFoodRecallLimit').val(), 10);
+    	template.limit.set(limit, 10);
+    	var state = $("#stateSelector").val();
+        
+        if(state === null){
+      	  template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
+        }else{      	  
+      	  template.filter.set(window.LUtil.getCrit(state, reasonFilter));
+        }
+    },
+    'click #gotit' : function(){   
       $(".splash").hide();
     }, 'click #affordanceOpen': function(){   
       $(".splash").show();
@@ -316,7 +390,14 @@
       // set the reactive var with updated filter, this.autorun within the
       // create method will re-run the subscription with the new value every
       // time this changes.
-      template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
+      var state = $("#stateSelector").val();
+      
+      if(state === null){
+    	  template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
+      }else{    	  
+    	  template.filter.set(window.LUtil.getCrit(state, reasonFilter));
+      }      
+      
       template.limit.set(limit); 
     }
   });
@@ -342,10 +423,14 @@
       if (Meteor.settings.debug) { console.log("limit: " + self.limit.get()); }
       self.subscription = self.subscribe('LatestFoodRecalls', self.filter.get(), self.limit.get());
       if (self.subscription.ready()) {
-        // reset the select2 interface and hide the details
-        $('#latestFoodRecalls').val('');
-        $('#latestFoodRecalls').select2();
+        // reset the select2 interface and hide the details    
+    	$('#latestFoodRecalls').select2({
+    	 	placeholder: 'Select a Recall',
+    	    allowClear: true
+    	});  	    
+    	    
         $('.recall-detail').hide();
+
       }
     });
     self.latestFoodRecalls = function() {
@@ -355,11 +440,24 @@
         return false;
       } 
     };
+    
   };
   
   Template.map.rendered = function(){    
     window.LUtil.initMap();
-    $('#latestFoodRecalls').select2({});
-    $('.recall-detail').hide();        
+    $('#stateSelector').val('');
+    $('#latestFoodRecalls').val('');
+    $('#latestFoodRecalls').select2({
+    	placeholder: 'Select a Recall',
+        allowClear: true
+    });
+    $('.recall-detail').hide();    
+    $("#stateSelector").select2({
+        placeholder: 'Filter by State',
+        allowClear: true
+      });
+   
+    $("#latestFoodRecallLimit").select2();   
+    
   };
 })();

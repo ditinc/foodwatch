@@ -7,6 +7,10 @@ body {
   font-family: Arial;
 }
 
+#recallLimit{
+	padding: 6px 8px;
+}
+
 .origin{
 	background: blue;
 	opacity: 0.6;
@@ -17,9 +21,25 @@ body {
 	opacity: 0.2;
 }
 
+#latestFoodRecallReasonFilter{
+	margin: 10px 0px 0px 4px;
+	padding: 0px 0px 0px 4px;
+	border-radius: 4px;	
+	font: 14px/22px Arial, Helvetica, sans-serif;
+}
+
+#recallDiv{
+	padding: 10px 4px 4px 4px;
+	float:left;
+}
+
 .originDestination{
 	background: purple;
 	opacity: 0.4;	
+}
+
+#latestFoodRecallStateDiv{
+	margin: 0px 0px 0px 4px;
 }
 
 #gotit{
