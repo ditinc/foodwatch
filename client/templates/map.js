@@ -9,6 +9,7 @@
     geojson: null,  
     details: null,
     currentOrigin: null,
+    currentSelectedState: null,
     lines: [],
     currentDestinations: [],
     originMarker: null,
@@ -185,9 +186,20 @@
       return parsedStates;
     },
     onEachFeature: function(feature, layer) {
-    	layer.on({		
-			click: function(){				
-				$("#stateSelector").select2('val', feature.properties.abbreviation);				
+    	var self = this;
+    	layer.on({   		
+			click: function(){	
+				if(window.LUtil.currentSelectedState !== null){
+					window.LUtil.currentSelectedState.setStyle({			         
+			          fillColor: 'white'
+			        });
+				}
+				
+				layer.setStyle({			         
+			          fillColor: 'yellow'
+			        });
+				$("#stateSelector").select2('val', feature.properties.abbreviation);
+				window.LUtil.currentSelectedState = layer;
 			}
 		});	
 	},
@@ -299,7 +311,15 @@
     	 var state = $(event.currentTarget).val();
     	 var self = Template.instance();
     	 var reasonFilter = $('#latestFoodRecallReasonFilter').val();
-    	 if (state === null) {      		 
+    	 
+    	 if(window.LUtil.currentSelectedState !== null){
+    		 window.LUtil.currentSelectedState.setStyle({			         
+   	          fillColor: 'white'
+   	        });
+       		window.LUtil.currentSelectedState = null;
+    	 }
+    	 
+    	 if (state === null) {   		
     		self.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
     		return FoodRecalls.latest(self.filter.get(),self.limit.get());
  		}   	    	
@@ -316,12 +336,32 @@
 	    self.subscription = self.subscribe('LatestFoodRecalls', self.filter.get(), self.limit.get());
 	    
 	    $("#latestFoodRecalls").select2('data', {id: "", text: "select a recall"}); 
+	    
+	    for (var key in window.LUtil.geojson._layers) {
+	        if (window.LUtil.geojson._layers.hasOwnProperty(key)) {
+	          //var props = self.geojson._layers[key].feature.properties;
+	          if(window.LUtil.geojson._layers[key].feature.properties.abbreviation === state) {          
+	        	  window.LUtil.currentSelectedState = window.LUtil.geojson._layers[key];            
+	        	  window.LUtil.geojson._layers[key].setStyle({	             
+	        		  fillColor: 'yellow'
+	            });
+	            
+	          }			
+	        }
+	      }
 	        
 	    return FoodRecalls.latest(self.filter.get(), self.limit.get());  
 	  	    
 	},	
     'change #latestFoodRecalls': function(event, template) {
       window.LUtil.resetMap();
+      
+      if(window.LUtil.currentSelectedState!== null){
+    	  window.LUtil.currentSelectedState.setStyle({			         
+	          fillColor: 'yellow'
+	        });
+      }
+      
       var val = $('#latestFoodRecalls').select2('val');
       if (Meteor.settings.debug) { console.log('change select val:', val); }
       
