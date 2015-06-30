@@ -251,8 +251,7 @@
           props ? 
             this._div.innerHTML = (props ?
               '<div class="recallDetailsHeader"><div><a href="#" id="detMinMax" class="pull-left"><span id="detMinMaxSpan" class="glyphicon glyphicon-minus"></span></a></div><div> Recall Details </div></div>' +
-              '<br><div id = "recallDetails">'+
-              '<h3>Recall Details</h3>' +
+              '<br><div id = "recallDetails">'+              
               '<div><b>Date Reported : </b>' + props.report_date + '</div>' +
               '<div><b>Status : </b>' + props.status + '</div>' +
               '<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +
