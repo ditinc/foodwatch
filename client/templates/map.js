@@ -476,6 +476,11 @@
       });
    
     $("#latestFoodRecallLimit").select2();
+    alert(window.screen.width)
+    if(window.screen.width < 800){
+    	$("#forkMe").hide();
+    }
+   
     
     Blaze.render(Template.mapSplashModal, $('<div>').appendTo('body').get(0));    
   };
