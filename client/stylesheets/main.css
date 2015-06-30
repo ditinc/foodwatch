@@ -22,6 +22,10 @@ body {
 	padding: 6px 8px;
 }
 
+#mapLegendPanel {
+  width: 180px;
+}
+
 .origin{
 	background: blue;
 	opacity: 0.6;
@@ -54,7 +58,13 @@ body {
 }
 
 #gotit{
-	text-align: right;
+	margin: 15%;
+}
+
+p.intro {
+  line-height: 1.5;
+  margin: 5px 0 35px 0;
+  font-size: larger;
 }
 
 .logo {
@@ -70,16 +80,9 @@ body {
 	float:right;
 }
 
-.splash{     
-     width:33%;
-     height:auto;
-     z-index:15;
-     top:50%;     
-     background:white;
-	 border-radius: 5px;
-	 padding: 6px 8px;
-	 font: 14px/16px Arial, Helvetica, sans-serif;
-	 box-shadow: 0 0 15px rgba(0,0,0,0.2);
+.splash{  
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
 }
 
 .legend {
