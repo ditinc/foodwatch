@@ -1,5 +1,5 @@
 /*LUtil is inspired by leaflet-demo (https://github.com/MeteorHudsonValley/leaflet-demo) */
-/*globals window, L, $, Tracker, Template, Meteor, console, Session, _, ReactiveVar, ReactiveDict, moment*/
+/*globals window, L, $, Template, Meteor, console, _, ReactiveVar, moment*/
 /*globals FoodRecalls, StatesData */
 (function () {
   "use strict";
@@ -220,6 +220,14 @@
         L.DomEvent.disableClickPropagation(this._div);
         return this._div;
       };
+    },    
+    onAddHandlerWithTemplate: function(selector, template) {
+      return function() {
+        this._div = L.DomUtil.create('div', selector);
+        Blaze.render(template, this._div);
+        L.DomEvent.disableClickPropagation(this._div);
+        return this._div;
+      };
     },
     addControls: function() {
       var self = this;
@@ -255,7 +263,7 @@
       self.details.addTo(self.map);	
       
       var logo = L.control({position: 'topleft'});
-      logo.onAdd = self.onAddHandler('logo', '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>');        
+      logo.onAdd = self.onAddHandlerWithTemplate('logo', Template.mapLabel);
       logo.addTo(self.map);	
       
       var legend = L.control({position: 'bottomleft'});
@@ -368,8 +376,6 @@
     },
     'click #gotit' : function(){   
       $(".splash").hide();
-    }, 'click #affordanceOpen': function(){   
-      $(".splash").show();
     }, 'click #applyFilter': function(event, template) {
       // we could build a more complicated filter, but only grabbing the
       // latestFoodRecallReasonFilter from the DOM.
