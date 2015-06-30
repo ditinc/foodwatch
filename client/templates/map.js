@@ -228,16 +228,6 @@
       recallSelector.addTo(this.map);
       $("#latestFoodRecallForm").appendTo("#recallSelector").show();
       
-      var stateSelector = '<select id="stateSelector">'       	
-        	
-      for(var j = 0; j<StatesData.features.length; j++){
-    	  stateSelector += '<option value="'+StatesData.features[j].properties.abbreviation+'">'+StatesData.features[j].properties.name+'</option>';
-      }
-      
-      stateSelector +='</select>';
-    	  
-    $("#latestFoodRecallStateDiv").html(stateSelector);
-      
       self.details = L.control({position: 'bottomright'});
       self.details.onAdd = self.onAddHandler('info recall-detail', '');
       
@@ -406,6 +396,9 @@
     latestFoodRecalls: function() {
       var self = Template.instance();
       return self.latestFoodRecalls();
+    },
+    StatesData: function(){    	  	
+    	return Object.keys(StatesData).map(function(k) { return StatesData[k]})[1];
     },
     formatDate: function(report_date) {
       if (Meteor.settings.debug) { console.log('report_date: ', report_date); }

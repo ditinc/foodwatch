@@ -8,7 +8,11 @@
             <br>
             <div>           	
             	<div id="latestFoodRecallStateDiv" style="float:left;">		
-            		
+            		<select id="stateSelector">
+            			{{#each StatesData}}
+            				<option value="{{this.properties.abbreviation}}">{{this.properties.name}}</option>';		                    
+		                {{/each}}
+            		</select>
             	</div>
                 <div id="latestFoodRecallLimitDiv" style="float:right;">
 	                <label for="latestFoodRecallLimit"># Recalls:</label>	                
