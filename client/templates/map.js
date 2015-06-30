@@ -221,6 +221,14 @@
         return this._div;
       };
     },
+    onAddHandlerWithTemplate: function(selector, template) {
+      return function() {
+        this._div = L.DomUtil.create('div', selector);
+        Blaze.render(template, this._div);
+        L.DomEvent.disableClickPropagation(this._div);
+        return this._div;
+      };
+    },
     addControls: function() {
       var self = this;
       var recallSelector = L.control({position: 'topright'});
@@ -258,20 +266,9 @@
       logo.onAdd = self.onAddHandler('logo', '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>');        
       logo.addTo(self.map);	
       
-      var legend = L.control({position: 'bottomleft'});
-      var legendHtml = '<b>Legend</b><br><br><div><span class="legendBlock origin"></span> Origin</div>'+
-                  '<br><div><span class="legendBlock destination"></span> Destination</div>'+
-                  '<br><div><span class="legendBlock originDestination"></span> Origin & Destination</div>';
-      legend.onAdd = self.onAddHandler('info', legendHtml);      
-      legend.addTo(self.map);	
-      
-      var splash = L.control({position: 'topleft'});
-      var splashHtml = '<b>Welcome to Foodwatch!</b> <br><br> Select a recall event in the drop down to see the source '+
-        'state of the food item recall and the states to which the product was shipped.  The top 10 most recent '+
-        'recall items are shown from open.fda.gov'+		
-        '<div id="gotit"><a href="#" >Got it!</a></div>';
-      splash.onAdd = self.onAddHandler('splash', splashHtml);   
-      splash.addTo(self.map);
+      //var splash = L.control({position: 'topleft'});
+      //splash.onAdd = self.onAddHandlerWithTemplate('splash', Template.mapSplash);
+      //splash.addTo(self.map);
     },
     getCrit: function(state, reasonFilter){
     	var self = this;
@@ -365,11 +362,8 @@
         }else{      	  
       	  template.filter.set(window.LUtil.getCrit(state, reasonFilter));
         }
-    },
-    'click #gotit' : function(){   
-      $(".splash").hide();
     }, 'click #affordanceOpen': function(){   
-      $(".splash").show();
+      $("#mapSplashModal").modal('show');
     }, 'click #applyFilter': function(event, template) {
       // we could build a more complicated filter, but only grabbing the
       // latestFoodRecallReasonFilter from the DOM.
@@ -450,7 +444,8 @@
         allowClear: true
       });
    
-    $("#latestFoodRecallLimit").select2();   
+    $("#latestFoodRecallLimit").select2();
     
+    Blaze.render(Template.mapSplashModal, $('<div>').appendTo('body').get(0));    
   };
 })();
