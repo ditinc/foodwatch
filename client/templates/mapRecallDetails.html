@@ -9,7 +9,7 @@
   </div>
   <br>
   <div id="recallDetails">
-    <!-- <div><b>Date Reported : </b> moment(this.report_date, 'YYYYMMDD').format('MMMM DD, YYYY') </div> -->    
+    <div><b>Date Reported : </b> {{formatDate this.report_date}}</div>
     <div><b>Status : </b> {{this.status}} </div>
     <div><b>Recalling Firm : </b> {{this.recalling_firm}} </div>
     <div><b>Product Description : </b> {{this.product_description}} </div>
@@ -18,7 +18,7 @@
     <div><b>Code Information : </b> {{this.code_info}} </div>
     <div><b>Product Type : </b> {{this.product_type}} </div>
     <div><b>Recall # : </b> {{this.recall_number}} </div>
-    <!-- <div><b>Date Initiated : </b> moment(this.recall_initiation_date, 'YYYYMMDD').format('MMMM DD, YYYY') </div> -->
+    <div><b>Date Initiated : </b> {{formatDate this.recall_initiation_date}} </div>
     <div><b>Classification : </b> {{this.classification}} </div>
     <div><b>State : </b> {{this.state}} </div>
     <div><b>City : </b> {{this.city}} </div>

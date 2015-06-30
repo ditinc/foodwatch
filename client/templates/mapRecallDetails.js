@@ -1,4 +1,4 @@
-/*globals Template*/
+/*globals Meteor, Template, console */
 Template.mapRecallDetails.events({
   'click #detMinMax' : function(){
     if(window.LUtil.detMinMax === 0){
@@ -14,6 +14,12 @@ Template.mapRecallDetails.events({
       $("#detMinMaxSpan").addClass("glyphicon glyphicon-plus");
       $(".recall-detail").css({"height":"38px"});
     }
+  }
+});
+Template.mapRecallDetails.helpers({
+  formatDate: function(report_date) {
+    if (Meteor.settings.debug) { console.log('report_date: ', report_date); }
+    return moment(report_date, 'YYYYMMDD').format('MMMM DD, YYYY');
   }
 });
 Template.mapRecallDetails.rendered = function() {};
