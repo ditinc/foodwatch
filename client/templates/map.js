@@ -220,12 +220,11 @@
         L.DomEvent.disableClickPropagation(this._div);
         return this._div;
       };
-    },
+    },    
     onAddHandlerWithTemplate: function(selector, template) {
       return function() {
         this._div = L.DomUtil.create('div', selector);
         Blaze.render(template, this._div);
-        //this._div.innerHTML = html;
         L.DomEvent.disableClickPropagation(this._div);
         return this._div;
       };
@@ -264,9 +263,6 @@
       self.details.addTo(self.map);	
       
       var logo = L.control({position: 'topleft'});
-      //logo.onAdd = self.onAddHandler('logo', '<b>Foodwatch</b><div id="affordanceOpen"><a href="#" > ?</a></div>');
-      //logo.onAdd = self.onAddHandler('logo', Blaze.toHTMLWithData(Template.mapLabel,{}));
-      //var renderedTemplate = Template.mapLabel.renderFunction();
       logo.onAdd = self.onAddHandlerWithTemplate('logo', Template.mapLabel);
       logo.addTo(self.map);	
       
