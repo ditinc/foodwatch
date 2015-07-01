@@ -114,7 +114,7 @@
         return;
       }
       
-      $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + city + " "+state+" USA ", function(data){
+      $.getJSON('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + city + " "+state+" USA ", function(data){
         var latlon = [data[0].lat, data[0].lon];
         self.originMarker = L.marker(latlon).addTo(self.map);
         self.originMarker.bindPopup("<b>"+mfg+"</b><br />"+city+", "+state).openPopup();
