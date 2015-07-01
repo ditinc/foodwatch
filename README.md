@@ -17,14 +17,14 @@ Master Branch :rocket: | http://foodwatch-proxy-snapshot.foodwatch-stack-snapsho
 - Meteor Developer: dan-nyanko
 - Senior Software Consultant and Scrum Master: etrudeau
 
-Our development process requires selection of a project lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.  On most projects, DevOps would be a separate team member, but due to the small size of this project, the lead handled the DevOps setup and tweaks.  We conduct code review directly in GitHub through comments and issues and in our Slack (http://slack.com) collaboration environment.  Issues are automatically synced with Waffle.io Agile boards.
+Our development process requires selection of a project lead to run the project.  This individual is ultimately responsible for project success and product quality.  A senior software consultant assists by coaching the team during sprint planning, daily scrums, and independent reviews.  On most projects, DevOps would be a separate team member, but due to the small size of this project, the lead handled the DevOps setup and tweaks.  We conduct code review directly in GitHub through comments and issues and in our [Slack](http://slack.com) collaboration environment.  Issues are automatically synced with [Waffle.io](https://waffle.io/) Agile boards.
 
 All items marked under milestone 1.0 were part of the original prototype, and were delivered on June 23, 2015.  Items under milestone 1.1 were developed after the prototype delivery date was extended and were delived on June 30, 2015.
 
 ## Technology Stack
-Foodwatch is built on Meteor.js/MongoDB using Leaflet and OpenStreetMaps as the mapping layer and map provider, with Twitter Bootstrap as the CSS framework.  We leverage CircleCI for continuous integration.  The app is deployed in a Docker container hosted on DigitalOcean.  We leverage Tutum to manage the Docker container on DigitalOcean.
+Foodwatch is built on [Meteor.js](https://www.meteor.com/) and [MongoDB](https://www.mongodb.org/) using [Leaflet](http://leafletjs.com/) and [OpenStreetMaps](https://www.openstreetmap.org) as the mapping layer and map provider, with [Twitter Bootstrap](http://getbootstrap.com/) as the CSS framework.  We leverage [CircleCI](https://circleci.com/) for continuous integration.  The app is deployed in a [Docker](https://www.docker.com/) container hosted on [DigitalOcean](https://www.digitalocean.com/).  We leverage [Tutum](https://www.tutum.co/) to manage the Docker container on DigitalOcean.
 
-Most of the technologies in Foodwatch are free and open source.  However, several tools used in the development process are only free to use on open source projects.  These include Tutum, CircleCI, and NewRelic.  The software licensing is as follows:
+Most of the technologies in Foodwatch are free and open source.  However, several tools used in the development process are only free to use on open source projects.  These include Tutum, CircleCI, and [NewRelic](http://newrelic.com/).  The software licensing is as follows:
 
 - Meteor: MIT
 - Jasmine: MIT
@@ -39,7 +39,7 @@ Use of Foodwatch is limited by the licensing of its component parts.  The Foodwa
 
 ### Continuous Integration
 
-Automated continuous integration and deployment is managed through CircleCI (https://circleci.com). On commit to the Master branch, the code is automatically deployed to Docker Hub.  Tutum (https://www.tutum.co/) describes the container configuration, layout, and relationships, and automatically downloads/starts the Docker containers on a node at DigitalOcean.
+Automated continuous integration and deployment is managed through [CircleCI](https://circleci.com). On commit to the Master branch, the code is automatically deployed to [Docker Hub](https://hub.docker.com).  [Tutum](https://www.tutum.co/) describes the container configuration, layout, and relationships, and automatically downloads/starts the Docker containers on a node at DigitalOcean.
 
 For additional details, please see the wiki.
 
