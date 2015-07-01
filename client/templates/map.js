@@ -75,6 +75,8 @@
       }
     },
     resetMap: function(){
+      $('.recall-detail').html("");
+      $('.recall-detail').scrollTop();
       $('.recall-detail').hide();
       var self = this;
       if(self.currentDestinations.length!==0){
