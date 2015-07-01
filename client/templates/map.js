@@ -9,6 +9,7 @@
     geojson: null,  
     details: null,
     currentOrigin: null,
+    currentSelectedState: null,
     lines: [],
     currentDestinations: [],
     originMarker: null,
@@ -183,10 +184,19 @@
     },
     onEachFeature: function(feature, layer) {
       layer.on({
-        click: function(){				
-				$("#stateSelector").select2('val', feature.properties.abbreviation);				
-			}
-		});	
+        click: function(){
+          if(window.LUtil.currentSelectedState !== null){
+            window.LUtil.currentSelectedState.setStyle({
+              fillColor: 'white'
+            });
+          }
+          layer.setStyle({
+            fillColor: 'yellow'
+          });
+          $("#stateSelector").select2('val', feature.properties.abbreviation);
+          window.LUtil.currentSelectedState = layer;
+        }
+      });	
 	},
     styleDefault: function() {
       return {
@@ -275,12 +285,20 @@
     }
   };  
 
-  Template.map.events({
+  Template.map.events({ 
     'change #stateSelector' : function(event){
       window.LUtil.resetMap();
       var state = $(event.currentTarget).val();
       var template = Template.instance();
       var reasonFilter = $('#latestFoodRecallReasonFilter').val();
+      
+      if(window.LUtil.currentSelectedState !== null){
+        window.LUtil.currentSelectedState.setStyle({
+          fillColor: 'white'
+          });
+        window.LUtil.currentSelectedState = null;
+      }
+      
       if (state === null) {
         template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
         return FoodRecalls.latest(template.filter.get(),template.limit.get());
@@ -291,10 +309,29 @@
       template.subscription = template.subscribe('LatestFoodRecalls', template.filter.get(), template.limit.get());
       
       $("#latestFoodRecalls").select2('data', {id: "", text: "select a recall"});
+      
+      for (var key in window.LUtil.geojson._layers) {
+        if (window.LUtil.geojson._layers.hasOwnProperty(key)) {
+          //var props = self.geojson._layers[key].feature.properties;
+          if(window.LUtil.geojson._layers[key].feature.properties.abbreviation === state) {
+            window.LUtil.currentSelectedState = window.LUtil.geojson._layers[key];
+            window.LUtil.geojson._layers[key].setStyle({
+              fillColor: 'yellow'
+            });
+          }
+        }
+      }
       return FoodRecalls.latest(template.filter.get(), template.limit.get());
-	},	
+    },	
     'change #latestFoodRecalls': function() {
       window.LUtil.resetMap();
+      
+      if(window.LUtil.currentSelectedState!== null){
+        window.LUtil.currentSelectedState.setStyle({
+          fillColor: 'yellow'
+        });
+      }
+      
       var val = $('#latestFoodRecalls').select2('val');
       if (Meteor.settings.debug) { console.log('change select val:', val); }
       
@@ -435,7 +472,7 @@
     $("#latestFoodRecallLimit").select2();
     
     if(window.screen.width < 800){
-    	$("#forkMe").hide();
+      $("#forkMe").hide();
     }
 
     Blaze.render(Template.mapSplashModal, $('<div>').appendTo('body').get(0));    
