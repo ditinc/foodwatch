@@ -1,5 +1,5 @@
 /*LUtil is inspired by leaflet-demo (https://github.com/MeteorHudsonValley/leaflet-demo) */
-/*globals window, L, $, Template, Meteor, console, _, ReactiveVar, moment*/
+/*globals window, L, $, Blaze, Template, Meteor, console, _, ReactiveVar, moment*/
 /*globals FoodRecalls, StatesData */
 (function () {
   "use strict";
@@ -75,50 +75,48 @@
       }
     },
     resetMap: function(){
-  	  $('.recall-detail').hide();
-    	var self = this;
-    	if(self.currentDestinations.length!==0){
-            for(var state in self.currentDestinations){
-              if(self.currentOrigin !== self.currentDestinations[state]){
-                self.geojson.resetStyle(self.currentDestinations[state]);	
-              }
-            }
+      $('.recall-detail').hide();
+      var self = this;
+      if(self.currentDestinations.length!==0){
+        for(var state in self.currentDestinations){
+          if(self.currentOrigin !== self.currentDestinations[state]){
+            self.geojson.resetStyle(self.currentDestinations[state]);	
           }
-          
-          _.each(self.lines, function(line) {
-            self.map.removeLayer(self.lines[line]);
-          });
-          
-          self.lines = [];
-          
-          self.currentDestinations = [];
-          
-        if(self.originMarker!==null){
-        	self.map.removeLayer(self.originMarker); 
-  		}
-        
-        if(self.currentOrigin !== null){
-            self.geojson.resetStyle(self.currentOrigin);					
         }
+      }
+          
+      _.each(self.lines, function(line) {
+        self.map.removeLayer(self.lines[line]);
+      });
+          
+      self.lines = [];
+          
+      self.currentDestinations = [];
+          
+      if(self.originMarker!==null){
+        self.map.removeLayer(self.originMarker);
+      }
         
-        window.LUtil.detMinMax = 1;		
-		$("#detMinMaxSpan").removeClass("glyphicon glyphicon-plus")
-		$("#detMinMaxSpan").addClass("glyphicon glyphicon-minus")
-		$(".recall-detail").css({"height":"250px"});
-    	
+      if(self.currentOrigin !== null){
+        self.geojson.resetStyle(self.currentOrigin);					
+      }
+        
+      window.LUtil.detMinMax = 1;		
+      $("#detMinMaxSpan").removeClass("glyphicon glyphicon-plus");
+      $("#detMinMaxSpan").addClass("glyphicon glyphicon-minus");
+      $(".recall-detail").css({"height":"250px"});
     },    
     markOrigin: function(city, state, mfg){
-    	var self = this;    	
-    	if(city === null || state === null){
-    		return;    		
-    	}
-    	 
-    	var search = $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + city + " "+state+" USA ", function(data){
-    		var latlon = [data[0].lat, data[0].lon];
-    		var tempData = data;    		  		   		
-    		self.originMarker = L.marker(latlon).addTo(self.map);
-    		self.originMarker.bindPopup("<b>"+mfg+"</b><br />"+city+", "+state).openPopup();
-    	});       
+      var self = this;
+      if(city === null || state === null){
+        return;
+      }
+      
+      $.getJSON('http://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + city + " "+state+" USA ", function(data){
+        var latlon = [data[0].lat, data[0].lon];
+        self.originMarker = L.marker(latlon).addTo(self.map);
+        self.originMarker.bindPopup("<b>"+mfg+"</b><br />"+city+", "+state).openPopup();
+      });
     },
     highlightDestination: function(states){
       var self = this;      
@@ -128,7 +126,7 @@
           if (self.geojson._layers.hasOwnProperty(key)) {
           //var props = self.geojson._layers[key].feature.properties;
           if(self.geojson._layers[key].feature.properties.abbreviation === states[st]) {
-        	self.currentDestinations.push(self.geojson._layers[key]);
+            self.currentDestinations.push(self.geojson._layers[key]);
             var fillColor = "red";
             var fillOpacity = 0.2;
             if(self.currentOrigin === self.geojson._layers[key]){
@@ -149,13 +147,12 @@
     },
     
     getStateName : function(stateAbbr){
-    	for(var j = 0; j<StatesData.features.length; j++){
-   	        if (StatesData.features[j].properties.abbreviation === stateAbbr){       	    	   
-   	    		 return StatesData.features[j].properties.name; 	    	  
-   	        }
-    	}
-    	return null;
-           
+      for(var j = 0; j<StatesData.features.length; j++){
+        if (StatesData.features[j].properties.abbreviation === stateAbbr){
+          return StatesData.features[j].properties.name;
+        }
+      }
+      return null;
     },
     
     parseStates : function(states){
@@ -252,6 +249,8 @@
     },
     addControls: function() {
       var self = this;
+      // TODO: switch this to onAddHandlerWithTemplate and move the HTML
+      // into a Meteor Blaze template
       var recallSelector = L.control({position: 'topright'});
       recallSelector.onAdd = self.onAddHandler('info', '<b>  Recall Filtering </b><a href="#" id="filMinMax" class="pull-left"><span id="filMinMaxSpan" class="glyphicon glyphicon-minus"></span></a> <div id="recallSelector"></div>');
       recallSelector.addTo(this.map);
@@ -259,30 +258,15 @@
       
       self.details = L.control({position: 'bottomright'});
       self.details.onAdd = self.onAddHandler('info recall-detail', '');
-      
-      self.details.update = function (props) {
-          props ? 
-            this._div.innerHTML = (props ?
-              '<div class="recallDetailsHeader"><div><a href="#" id="detMinMax" class="pull-left"><span id="detMinMaxSpan" class="glyphicon glyphicon-minus"></span></a></div><div> Recall Details </div></div>' +
-              '<br><div id = "recallDetails">'+              
-              '<div><b>Date Reported : </b>' + moment(props.report_date, 'YYYYMMDD').format('MMMM DD, YYYY') + '</div>' +
-              '<div><b>Status : </b>' + props.status + '</div>' +
-              '<div><b>Recalling Firm : </b>' + props.recalling_firm + '</div>' +
-              '<div><b>Product Description : </b>' + props.product_description + '</div>' +              
-              '<div><b>Reason for Recall : </b>' + props.reason_for_recall + '</div>' +
-              '<div><b>Product Quantity : </b>' + props.product_quantity + '</div>' +
-              '<div><b>Code Information : </b>' + props.code_info + '</div>' +
-              '<div><b>Product Type : </b>' + props.product_type + '</div>' +
-              '<div><b>Recall # : </b>' + props.recall_number + '</div>' +              
-              '<div><b>Date Initiated : </b>' + moment(props.recall_initiation_date, 'YYYYMMDD').format('MMMM DD, YYYY') + '</div>' + 
-              '<div><b>Classification : </b>' + props.classification + '</div>' +              
-              '<div><b>State : </b>' + props.state + '</div>' +
-              '<div><b>City : </b>' + props.city + '</div>' +
-              '<div><b>Distribution Pattern : </b>' + props.distribution_pattern + '</div>'
-              : 'Select a Recall') : this.hide();
-              $('.recall-detail').show();
-        };
-      self.details.addTo(self.map);	
+      self.details.update = function(props) {
+        var self = this;
+        if (props) {
+          Blaze.renderWithData(Template.mapRecallDetails, props, this._div);
+        } else {
+          self.hide();
+        }
+      };      
+      self.details.addTo(self.map);
       
       var logo = L.control({position: 'topleft'});
       logo.onAdd = self.onAddHandlerWithTemplate('logo', Template.mapLabel);
@@ -290,54 +274,43 @@
       
     },
     getCrit: function(state, reasonFilter){
-    	var self = this;
-    	var stateName = this.getStateName(state);
-    	return {$and:[
-                      {$or:[		
-	  					    {state:state},
-						    {state:stateName},
-						    {distribution_pattern:{$regex : ".*"+state+".*"}},
-						    {distribution_pattern:{$regex : ".*"+stateName+".*"}},
-						    {distribution_pattern:{$regex : ".*nationwide.*"}}
-						    ]},
-						    {reason_for_recall: { $regex: reasonFilter, $options: 'i' }}]}
+      var stateName = this.getStateName(state);
+      return {$and:[
+                    {$or:[
+                          {state:state},
+                          {state:stateName},
+                          {distribution_pattern:{$regex : ".*"+state+".*"}},
+                          {distribution_pattern:{$regex : ".*"+stateName+".*"}},
+                          {distribution_pattern:{$regex : ".*nationwide.*"}}
+                          ]},
+                    {reason_for_recall: { $regex: reasonFilter, $options: 'i' }}]};
     }
-    
   };  
 
-  Template.map.events({
-     'change #stateSelector' : function(event, template){   	 
-    	 window.LUtil.resetMap();    	 
-    	 var state = $(event.currentTarget).val();
-    	 var self = Template.instance();
-    	 var reasonFilter = $('#latestFoodRecallReasonFilter').val();
-    	 
-    	 if(window.LUtil.currentSelectedState !== null){
-    		 window.LUtil.currentSelectedState.setStyle({			         
-   	          fillColor: 'white'
-   	        });
-       		window.LUtil.currentSelectedState = null;
-    	 }
-    	 
-    	 if (state === null) {   		
-    		self.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
-    		return FoodRecalls.latest(self.filter.get(),self.limit.get());
- 		}   	    	
-				
-		var limit = parseInt($('#latestFoodRecallLimit').val(), 10);		
-		    	    
-		self.filter.set(window.LUtil.getCrit(state, reasonFilter));
-	    	    	    
-	    var recallsByState = FoodRecalls.find({}, 
-					{sort: {recall_date: -1}, limit: self.limit.get()}).fetch();
-	    
-	    //TODO: check recallsByState and verify elements meet inclusion criteria req.
-	    
-	    self.subscription = self.subscribe('LatestFoodRecalls', self.filter.get(), self.limit.get());
-	    
-	    $("#latestFoodRecalls").select2('data', {id: "", text: "select a recall"}); 
-	    
-	    for (var key in window.LUtil.geojson._layers) {
+  Template.map.events({ 
+    'change #stateSelector' : function(event){
+      window.LUtil.resetMap();
+      var state = $(event.currentTarget).val();
+      var template = Template.instance();
+      var reasonFilter = $('#latestFoodRecallReasonFilter').val();
+      if(window.LUtil.currentSelectedState !== null){
+ 		 window.LUtil.currentSelectedState.setStyle({			         
+	          fillColor: 'white'
+	        });
+    		window.LUtil.currentSelectedState = null;
+ 	  }
+      if (state === null) {
+        template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
+        return FoodRecalls.latest(template.filter.get(),template.limit.get());
+      }
+      template.filter.set(window.LUtil.getCrit(state, reasonFilter));
+      
+      //TODO: check recallsByState and verify elements meet inclusion criteria req.
+      template.subscription = template.subscribe('LatestFoodRecalls', template.filter.get(), template.limit.get());
+      
+      $("#latestFoodRecalls").select2('data', {id: "", text: "select a recall"});
+      
+      for (var key in window.LUtil.geojson._layers) {
 	        if (window.LUtil.geojson._layers.hasOwnProperty(key)) {
 	          //var props = self.geojson._layers[key].feature.properties;
 	          if(window.LUtil.geojson._layers[key].feature.properties.abbreviation === state) {          
@@ -349,11 +322,10 @@
 	          }			
 	        }
 	      }
-	        
-	    return FoodRecalls.latest(self.filter.get(), self.limit.get());  
-	  	    
+      
+      return FoodRecalls.latest(template.filter.get(), template.limit.get());
 	},	
-    'change #latestFoodRecalls': function(event, template) {
+    'change #latestFoodRecalls': function() {
       window.LUtil.resetMap();
       
       if(window.LUtil.currentSelectedState!== null){
@@ -373,7 +345,7 @@
       var fr = self.latestFoodRecalls().fetch();
       var originState = null;
       var originCity = null;
-	  var mfg = null;
+      var mfg = null;
       var destinationStates = null;
       
       for(var i = 0; i<fr.length; i++){
@@ -381,7 +353,7 @@
           window.LUtil.details.update(fr[i]);	
           originState = fr[i].state;
           originCity = fr[i].city;
-	      mfg = fr[i].recalling_firm;
+          mfg = fr[i].recalling_firm;
           destinationStates = fr[i].distribution_pattern;
         }
       }
@@ -396,52 +368,37 @@
       }
       $('.recall-detail').show();
     },
-    'change #latestFoodRecallLimit': function(event, template){
-    	var reasonFilter = $('#latestFoodRecallReasonFilter').val();
-        var limit = parseInt($('#latestFoodRecallLimit').val(), 10);
-    	template.limit.set(limit, 10);
-    	var state = $("#stateSelector").val();
-        
-        if(state === null){
-      	  template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
-        }else{      	  
-      	  template.filter.set(window.LUtil.getCrit(state, reasonFilter));
-        }
+    'change #latestFoodRecallLimit': function(){
+      var template = Template.instance();
+      var reasonFilter = $('#latestFoodRecallReasonFilter').val();
+      var limit = parseInt($('#latestFoodRecallLimit').val(), 10);
+      template.limit.set(limit, 10);
+      var state = $("#stateSelector").val();  
+      if(state === null){
+        template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
+      }else{
+        template.filter.set(window.LUtil.getCrit(state, reasonFilter));
+      }
     }, 'click #affordanceOpen': function(){   
       $("#mapSplashModal").modal('show');
     },
     'click #filMinMax' : function(){
-    	if(window.LUtil.filMinMax === 0){
-    		window.LUtil.filMinMax = 1;    		
-    		$("#latestFoodRecallForm").show();
-    		$("#filMinMaxSpan").removeClass("glyphicon glyphicon-plus")
-    		$("#filMinMaxSpan").addClass("glyphicon glyphicon-minus")    		
-    	}else if(window.LUtil.filMinMax === 1){
-    		window.LUtil.filMinMax = 0;    		
-    		$("#latestFoodRecallForm").hide();
-    		$("#filMinMaxSpan").removeClass("glyphicon glyphicon-minus")
-	    	$("#filMinMaxSpan").addClass("glyphicon glyphicon-plus")    		
-    	}	
-    },
-    'click #detMinMax' : function(){    	  	
-    	if(window.LUtil.detMinMax === 0){
-    		window.LUtil.detMinMax = 1;    		
-    		$("#recallDetails").show();
-    		$("#detMinMaxSpan").removeClass("glyphicon glyphicon-plus")
-    		$("#detMinMaxSpan").addClass("glyphicon glyphicon-minus")
-    		$(".recall-detail").css({"height":"250px"});
-    	}else if(window.LUtil.detMinMax === 1){
-    		window.LUtil.detMinMax = 0;    		
-    		$("#recallDetails").hide();
-    		$("#detMinMaxSpan").removeClass("glyphicon glyphicon-minus")
-	    	$("#detMinMaxSpan").addClass("glyphicon glyphicon-plus")	
-    		$(".recall-detail").css({"height":"38px"});
-    	}       	
-    },
-    'click #applyFilter': function(event, template) {    
+      if(window.LUtil.filMinMax === 0){
+        window.LUtil.filMinMax = 1;
+        $("#latestFoodRecallForm").show();
+        $("#filMinMaxSpan").removeClass("glyphicon glyphicon-plus");
+        $("#filMinMaxSpan").addClass("glyphicon glyphicon-minus");
+      }else if(window.LUtil.filMinMax === 1){
+        window.LUtil.filMinMax = 0;
+        $("#latestFoodRecallForm").hide();
+        $("#filMinMaxSpan").removeClass("glyphicon glyphicon-minus");
+        $("#filMinMaxSpan").addClass("glyphicon glyphicon-plus");
+      }
+    },    
+    'click #applyFilter': function() {
+      var template = Template.instance();
       var reasonFilter = $('#latestFoodRecallReasonFilter').val();
-      var limit = parseInt($('#latestFoodRecallLimit').val(), 10);
-      console.log('limitval: ', limit);
+      var limit = parseInt($('#latestFoodRecallLimit').val(), 10);      
       if (Meteor.settings.debug) { console.log('reasonFilter:', reasonFilter); }
       // set the reactive var with updated filter, this.autorun within the
       // create method will re-run the subscription with the new value every
@@ -449,9 +406,9 @@
       var state = $("#stateSelector").val();
       
       if(state === null){
-    	  template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
-      }else{    	  
-    	  template.filter.set(window.LUtil.getCrit(state, reasonFilter));
+        template.filter.set({reason_for_recall: { $regex: reasonFilter, $options: 'i' }});
+      }else{
+        template.filter.set(window.LUtil.getCrit(state, reasonFilter));
       }      
       
       template.limit.set(limit); 
@@ -463,8 +420,8 @@
       var self = Template.instance();
       return self.latestFoodRecalls();
     },
-    StatesData: function(){    	  	
-    	return Object.keys(StatesData).map(function(k) { return StatesData[k]})[1];
+    StatesData: function(){
+      return Object.keys(StatesData).map(function(k) { return StatesData[k]; })[1];
     },
     formatDate: function(report_date) {
       if (Meteor.settings.debug) { console.log('report_date: ', report_date); }
@@ -482,14 +439,12 @@
       if (Meteor.settings.debug) { console.log("limit: " + self.limit.get()); }
       self.subscription = self.subscribe('LatestFoodRecalls', self.filter.get(), self.limit.get());
       if (self.subscription.ready()) {
-        // reset the select2 interface and hide the details    
-    	$('#latestFoodRecalls').select2({
-    	 	placeholder: 'Select a Recall',
-    	    allowClear: true
-    	});  	    
-    	    
+        // reset the select2 interface and hide the details
+        $('#latestFoodRecalls').select2({
+          placeholder: 'Select a Recall',
+          allowClear: true
+        });
         $('.recall-detail').hide();
-
       }
     });
     self.latestFoodRecalls = function() {
@@ -507,8 +462,8 @@
     $('#stateSelector').val('');
     $('#latestFoodRecalls').val('');
     $('#latestFoodRecalls').select2({
-    	placeholder: 'Select a Recall',
-        allowClear: true
+      placeholder: 'Select a Recall',
+      allowClear: true
     });
     $('.recall-detail').hide();    
     $("#stateSelector").select2({
@@ -517,11 +472,11 @@
       });
    
     $("#latestFoodRecallLimit").select2();
+    
     if(window.screen.width < 800){
     	$("#forkMe").hide();
     }
-   
-    
+
     Blaze.render(Template.mapSplashModal, $('<div>').appendTo('body').get(0));    
   };
 })();
